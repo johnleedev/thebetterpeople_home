@@ -1,0 +1,177 @@
+@mixin middle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+};
+@mixin margin-vertical-middle {
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+}
+
+.soloDetail {
+
+  
+  .topimage {
+    width: 100%;  
+    height: 300px;
+    overflow: hidden;
+    @include middle;
+
+    img {
+      width: 100%;
+    }
+  }
+
+  > .inner {
+    height: 100%;
+    @include middle;
+    flex-direction: column;
+
+    .noticebox{
+      width: 1000px;
+      margin-top: 50px;
+      margin-bottom: 100px;
+      text-align: center;
+
+      .notice-title {
+        @include middle;
+        height: 100px;
+        border-bottom: 1px solid #333;
+        font-size: 30px;
+      }
+      .noticebox-sub {
+        display: flex;
+  
+        .noticebox-sub-left {
+          width: 40%;
+          min-height: 500px;
+  
+          .notice-image{
+            width: 100%; 
+            height: 100%; 
+            overflow: hidden;
+            padding-top: 10px;
+            @include middle;
+        
+            img {
+              width: 400px;
+            }
+  
+          }
+        }
+        ul.noticebox-sub-right {
+          width: 60%;
+          padding: 20px;
+  
+          li.notice-list{
+            display: flex;
+            height: 50px;
+            align-items: center;
+            border-bottom: 1px solid #EAEAEA;
+            font-weight: bold;
+  
+            p {
+              width: 150px;
+              font-weight: 500;
+            }
+          }
+        }
+      }
+    }
+
+    // program -----------------------
+
+    .programbox {
+      width: 100%;
+      margin-top: 50px;
+      margin-bottom: 100px;
+      text-align: center;
+      @include middle;
+      flex-direction: column;
+
+      .program-title {
+        width: 1000px;
+        text-align: left;
+        font-size: 24px;
+        font-weight: bold;
+      }
+      .program-cover {
+        width: 1000px;
+        background-color: #fff;
+
+        .program-list {
+          text-align: left;
+          margin-top: 10px;
+          margin-bottom: 10px;
+          font-size: 20px;
+        }
+      }
+    }
+
+    // career -----------------------
+
+    .careerbox {
+      width: 100%;
+      margin-top: 50px;
+      margin-bottom: 100px;
+      text-align: center;
+      @include middle;
+      flex-direction: column;
+
+      .career-title {
+        width: 1000px;
+        text-align: left;
+        font-size: 24px;
+        font-weight: bold;
+      }
+      .career-container {
+        margin-top: 20px;
+        margin-bottom: 30px;
+
+        .career-player {
+          width: 1000px;
+          text-align: left;
+          display: flex;
+          align-items: center;
+          
+          .career-part {
+            margin-right: 20px;
+          }
+          .career-name{
+            font-size: 24px;
+          }
+        }
+        .career-content {
+          display: flex;
+          width: 1000px;
+
+          .career-image {
+            margin-right: 30px;
+
+            img {
+              width: 300px;
+            }
+          }
+          
+
+          .career-listcover {
+              
+            .career-writting{
+              font-size: 18px;
+            }
+            .career-list {
+              text-align: left;
+              margin-top: 10px;
+              margin-bottom: 10px;
+              font-size: 18px;
+            }
+          }
+        }
+        
+      }
+    }
+
+
+  }
+}  
