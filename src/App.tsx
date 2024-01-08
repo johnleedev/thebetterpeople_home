@@ -13,6 +13,7 @@ import RegisterPlayer from './screens/apply/RegisterPlayer';
 import Solo from './screens/pamphlet/Solo';
 import SoloDetail from './screens/pamphlet/SoloDetail';
 import RegisterResult from './screens/apply/RegisterResult';
+import RegisterProgram from './screens/apply/RegisterProgram';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/usenotice" element={<UseNotice/>}/>
         <Route path="/apply" element={<Apply/>}/>
         <Route path="/registerdefault" element={<RegisterDefault/>}/>
+        <Route path="/registerprogram" element={<RegisterProgram/>}/>
         <Route path="/registerplayer" element={<RegisterPlayer/>}/>
         <Route path="/registerresult" element={<RegisterResult/>}/>
         <Route path="/solo" element={<Solo/>}/>

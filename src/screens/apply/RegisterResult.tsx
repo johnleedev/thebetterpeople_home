@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
-import './Register.scss'
+import './RegisterDefault.scss'
 import company from "../../images/notice/company.jpg"
 import Footer from '../../components/Footer';
 import Title from '../../components/Title';

@@ -7,6 +7,7 @@ import { useLocation } from 'react-router-dom';
 import axios from 'axios'
 import MainURL from "../../MainURL";
 import Loading from '../../components/Loading';
+import { json } from 'stream/consumers';
 
 interface postProps {
   id : number,
@@ -17,7 +18,6 @@ interface postProps {
   place : string
   address : string,
   imageName : string,
-  program : Array<string>,
   quiry: string,
   superViser: string,
   opener: string,
@@ -26,8 +26,19 @@ interface postProps {
   ticketReserve: string,
 }
 
+interface programProps {
+  number : number,
+  composition: string[],
+  songName: string[]
+}
+
+interface subProgramProps {
+  programNumber : number,
+  songName : string[]
+}
+
 interface profileProps {
-  id : number,
+  pamphletID : number,
   playerName : string,
   part : string,
   imageName : string,
@@ -40,16 +51,27 @@ export default function SoloDetail (props:any) {
   const location = useLocation(); 
 
   let [postData, setPostData] = useState<postProps>();
+  let [programData, setProgramData] = useState<programProps[]>([]);
+  let [subProgramData, setSubProgramData] = useState<subProgramProps[]>([]);
   let [profileData, setProfileData] = useState<profileProps[]>([]);
   const fetchPosts = async () => {
     const post = await axios.get(`${MainURL}/pamphlets/posts/${location.state.id}`)
     if (post.data) {
-      let copy : postProps = post.data;
+      let copy : postProps = post.data[0];
       setPostData(copy);
+    }
+    const program = await axios.get(`${MainURL}/pamphlets/program/${location.state.id}`)
+    if (program.data) {
+      let copy = program.data[0];
+      const programData = JSON.parse(copy.program);
+      setProgramData(programData);
+      const subProgramData = JSON.parse(copy.subProgram);
+      setSubProgramData(subProgramData);
     }
     const profile = await axios.get(`${MainURL}/pamphlets/profiles/${location.state.id}`)
     if (profile.data) {
       let copy : profileProps[] = profile.data;
+      copy.reverse();
       setProfileData(copy);
     }
   };
@@ -58,9 +80,12 @@ export default function SoloDetail (props:any) {
     fetchPosts();
   }, []);
 
+  console.log(profileData);
+
   const posterImageURL = `${MainURL}/images/pamphlet_default/${postData?.imageName}`
- 
-  return  postData === undefined || profileData === undefined ? <Loading /> : (
+  
+  
+  return  postData === undefined || programData === undefined || profileData === undefined ? <Loading /> : (
     <div className='soloDetail'>
 
       <div className="topimage">
@@ -80,16 +105,16 @@ export default function SoloDetail (props:any) {
               </div>
             </div>
             <ul className="noticebox-sub-right">
-              <li className="notice-list"><p>지역</p>{postData?.location}</li>
-              <li className="notice-list"><p>날짜</p>{postData?.date}</li>
-              <li className="notice-list"><p>시간</p>{postData?.time}</li>
-              <li className="notice-list"><p>장소</p>{postData?.place}</li>
-              <li className="notice-list"><p>주관</p>{postData?.superViser}</li>
-              <li className="notice-list"><p>주최</p>{postData?.opener}</li>
-              <li className="notice-list"><p>후원</p>{postData?.supporter}</li>
-              <li className="notice-list"><p>티켓</p>{postData?.ticket}</li>
-              <li className="notice-list"><p>티켓예매</p>{postData?.ticketReserve}</li>
-              <li className="notice-list"><p>문의</p>{postData?.quiry}</li>
+              <li className="notice-list"><p>지역</p><p className='content'>{postData?.location}</p></li>
+              <li className="notice-list"><p>날짜</p><p className='content'>{postData?.date}</p></li>
+              <li className="notice-list"><p>시간</p><p className='content'>{postData?.time}</p></li>
+              <li className="notice-list"><p>장소</p><p className='content'>{postData?.place}</p></li>
+              <li className="notice-list"><p>주관</p><p className='content'>{postData?.superViser}</p></li>
+              <li className="notice-list"><p>주최</p><p className='content'>{postData?.opener}</p></li>
+              <li className="notice-list"><p>후원</p><p className='content'>{postData?.supporter}</p></li>
+              <li className="notice-list"><p>티켓</p><p className='content'>{postData?.ticket}</p></li>
+              <li className="notice-list"><p>티켓예매</p><p className='content'>{postData?.ticketReserve}</p></li>
+              <li className="notice-list"><p>문의</p><p className='content'>{postData?.quiry}</p></li>
             </ul>
           </div>
         </div>
@@ -98,10 +123,57 @@ export default function SoloDetail (props:any) {
           <div className="program-title">Program</div>
           <ul className="program-cover">
             {
-              postData?.program.map((item:any, index:any)=>{
+              programData.map((item:any, index:any)=>{
+                const copy = subProgramData.find((e)=> e.programNumber === item.number);
                 return (
-                  <li className="program-list">
-                    {item}
+                  <li className="program-list" key={item.number}>
+                    {
+                      item.composition.map((compositionItem:any, compositionIndex:any)=>{
+                        return (
+                          <>
+                           {
+                            compositionItem === 'InterMission' 
+                            ?
+                            null
+                            :
+                            <p className="program-composition">{compositionItem}</p>
+                           }
+                          </>
+                        )
+                      })
+                    }
+                    {
+                      item.songName.map((subItem:any, subIndex:any)=>{
+                        return(
+                          <>
+                            {
+                              subItem === 'InterMission' 
+                              ?
+                              <p className="InterMission" key={subIndex}>
+                              - InterMission -
+                              </p>
+                              :
+                              <p className="program-songname" key={subIndex}>{subItem}</p>
+                            }
+                            {
+                              copy
+                              ?
+                              <>
+                                {
+                                  copy.songName.map((song:any, songIdx:any)=>{
+                                    return (
+                                      <p className="program-subsongname" key={songIdx}>{songIdx+1}. {song}</p>
+                                    )
+                                  })
+                                }
+                              </>
+                              :
+                              null
+                            }
+                          </>
+                        )
+                      })
+                    }
                   </li>
                 )
               })
@@ -123,7 +195,7 @@ export default function SoloDetail (props:any) {
                   </div>
                   <div className="career-content">
                     {
-                      item.imageName &&
+                      item.imageName !== 'undefined' &&
                       <div className="career-image">
                         <img src={profileImageURL} alt='profileImage'/>
                       </div>

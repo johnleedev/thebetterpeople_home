@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
-import './Register.scss'
+import './RegisterPlayer.scss'
 import company from "../../images/notice/company.jpg"
 import Footer from '../../components/Footer';
 import Title from '../../components/Title';
@@ -15,21 +15,29 @@ export default function RegisterPlayer (props:any) {
 
   let navigate = useNavigate();
   const location = useLocation(); 
- 
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  
-  const [part, setPart] = useState('');
-  const [name, setName] = useState('');
-  const [imageFiles, setImageFiles] = useState<File[]>([]);
-  const [selectInputWrite, setSelectInputWrite] = useState<boolean>(false);
-  const [careerInputs, setCareerInputs] = useState<string[]>(['', '', '', '', '', ''])
-  const [careerText, setCareerText] = useState("");
-  const [isStyleWrite, setIsStyleWrite] = useState<boolean>(false);
+  const userPart = location.state.part;
+
+  interface playerProps {
+    part: string;
+    name: string;
+    imageFiles: File[];
+    careerInputs: string[];
+    careerText : string,
+    isStyleWrite: boolean;
+  }
+
+  const [players, setPlayers] = useState<Array<playerProps>>([
+    { part: userPart ? userPart : '', name: '', imageFiles: [], careerInputs: ['', '', '', ''], careerText: "", isStyleWrite: false },
+    { part: 'Piano', name: '', imageFiles: [], careerInputs: ['', '', '', ''], careerText: "", isStyleWrite: false }
+  ]);
 
   // careerTextArea 높이 조절
-  const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setCareerText(e.currentTarget.value);
-  
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
+    const inputs = [...players];
+    const copy = e.target.value;
+    inputs[index].careerText = copy;
+    setPlayers(inputs);
     if (textareaRef && textareaRef.current) {
       textareaRef.current.style.height = "0px";
       const scrollHeight = textareaRef.current.scrollHeight;
@@ -37,44 +45,75 @@ export default function RegisterPlayer (props:any) {
     }
   };
 
+  // 파트 입력란 내용 변경
+  const handlePartInputChange = (text: string, index: number) => {
+    const inputs = [...players];
+    inputs[index].part = text;
+    setPlayers(inputs);
+  };
+
+  // 이름 입력란 내용 변경
+  const handleNameInputChange = (text: string, index: number) => {
+    const inputs = [...players];
+    inputs[index].name = text;
+    setPlayers(inputs);
+  };
+
+  // 이력 스타일 변경
+  const handleCareerStyleChange = (index: number, selectInputWrite: boolean) => {
+    const inputs = [...players];
+    inputs[index].isStyleWrite = !selectInputWrite;
+    setPlayers(inputs);
+  };
+
   // 이력 입력란 내용 변경
-  const handleCareerInputChange = (text: string, index: number) => {
-    const inputs = [...careerInputs];
-    inputs[index] = text;
-    setCareerInputs(inputs);
+  const handleCareerInputChange = (index: number, text: string, subIndex: number) => {
+    const inputs = [...players];
+    inputs[index].careerInputs[subIndex] = text;
+    setPlayers(inputs);
   };
 
   // 이력 입력란 추가
-  const addCareerInput = () => {
-    setCareerInputs([...careerInputs, '']);
+  const addCareerInput = (index: number, subIndex: number) => {
+    const inputs = [...players];
+    inputs[index].careerInputs[subIndex + 1] = "";
+    setPlayers(inputs);
   };
 
   // 이력 입력란 삭제
   const removeCareerInput = (index: number) => {
-    const inputs = [...careerInputs];
-    inputs.splice(index, 1);
-    setCareerInputs(inputs);
+    const inputs = [...players];
+    inputs[index].careerInputs.splice(index, 1);
+    setPlayers(inputs);
   };
 
+  // ---------------------------------------------------------------
 
   interface BoxProps {
-    boxNumber: number;
+    index: number;
   }
 
-  const ImageBox: React.FC<BoxProps> = ({ boxNumber }) => {
+  const ImageBox: React.FC<BoxProps> = ({ index }) => {
+    
     const onDrop = useCallback((acceptedimageFiles: File[]) => {
-      setImageFiles(acceptedimageFiles);
+      const inputs = [...players];
+      inputs[index].imageFiles = acceptedimageFiles;
     }, []);
+
     const { getRootProps, getInputProps } = useDropzone({ onDrop });
     
     return (
       <div className="boxStyle">
-        {imageFiles.length > 0 && 
-          <div className='imagedelete' onClick={()=>{setImageFiles([])}}>-</div>
+        {players[index].imageFiles.length > 0 && 
+          <div className='imagedelete' onClick={()=>{
+            const copy = [...players];
+            copy[index].imageFiles = [];
+            setPlayers(copy);
+          }}>-</div>
         }
-        {imageFiles.length > 0 ? (
+        {players[index].imageFiles.length > 0 ? (
           <img
-            src={URL.createObjectURL(imageFiles[0])}
+            src={URL.createObjectURL(players[index].imageFiles[0])}
             style={{ width: '100%', height: '100%'}}
           />
           ) : (
@@ -87,36 +126,49 @@ export default function RegisterPlayer (props:any) {
       </div>
     );
   };
-
+  // ---------------------------------------------------------------
   // 출연진 정보 등록
   const registerPost = async () => {
-    const formData = new FormData();
-    formData.append("img", imageFiles[0]);
-    const getParams = {
-      userAccount : 'johnleedev@naver.com', userName: '이요한',
-      pamphletID : location.state, part: part, name : name, 
-      imageName : imageFiles[0].name, isStyleWrite : isStyleWrite,
-      career : JSON.stringify(selectInputWrite === false ? careerInputs : careerText),
-    }
+    
+    const formDataArray = players.map((player) => {
+      const formData = new FormData();
+      formData.append("img", player.imageFiles[0]);
+      return {
+        formData,
+        getParams: {
+          userAccount: 'johnleedev@naver.com',
+          userName: '이요한',
+          pamphletID: location.state.pamphletID,
+          part: player.part,
+          name: player.name,
+          imageName: player.imageFiles[0]?.name,
+          isStyleWrite: player.isStyleWrite,
+          career: JSON.stringify(player.isStyleWrite === false ? player.careerInputs : player.careerText),
+        },
+      };
+    });
 
-    axios 
-      .post(`${MainURL}/pamphlets/postplayer`, formData, {
+    const requests = formDataArray.map(({ formData, getParams }) => {
+      return axios.post(`${MainURL}/pamphlets/postplayer`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
         params: getParams,
-      })
-      .then((res) => {
-        if (res.data === true) {
-          alert('입력되었습니다.');
-          navigate('/registerresult'); 
-        } else {
-          alert(res.data);
-        }
-      })
-      .catch(() => {
-        console.log('실패함')
-      })
+      });
+    });
+
+    try {
+      const responses = await Promise.all(requests);
+      const allSuccessInserted = responses.every(res => res.data === true);
+      if (allSuccessInserted) {
+        alert('모든 출연진 정보가 성공적으로 입력되었습니다.');
+        navigate('/registerresult');
+      } else {
+        console.error('일부 출연진 정보가 입력되지 않았습니다.');
+      }
+    } catch (error) {
+      console.error('여러 명의 출연진 정보를 전송하는 중 에러 발생:', error);
+    }
   };
 
   return (
@@ -131,82 +183,93 @@ export default function RegisterPlayer (props:any) {
         <Title name={'등록하기'}/>
         <SubTitle name='출연진 프로필'/>
 
-        {/* 프로필 */}
-        <div className='registerBox'>
-          <div className="register menu">
-            <h3>프로필 사진</h3>
-            <div className="inputbox white">
-              <ImageBox boxNumber={1} />
-            </div>
-          </div>
-          <div className="divider"></div>
-          <div className="register content">
-            <div className="inputbox">
-              <div className='name'>
-                <p>파트</p>
-              </div>
-              <input type="text" onChange={(e)=>{setPart(e.target.value)}} value={part} />
-            </div>
-            <div className="inputbox">
-              <div className='name'>
-                <p>이름</p>
-              </div>
-              <input type="text" onChange={(e)=>{setName(e.target.value)}} value={name} />
-            </div>
-            <div className="selectButton">
-              <div className={selectInputWrite === false ? "selectButton-btn seleted" : "selectButton-btn"} 
-                onClick={()=>{setSelectInputWrite(false); setIsStyleWrite(false)}}>이력형식</div>
-              <div className={selectInputWrite === true ? "selectButton-btn seleted" : "selectButton-btn"} 
-                onClick={()=>{setSelectInputWrite(true); setIsStyleWrite(true)}}>글형식</div>
-            </div>
-            {
-              selectInputWrite === false
-              ?
-              <>
-                {careerInputs?.map((item, index) => (
-                  <div key={index} className='inputbox'>
-                    <div className='name2'>
-                      <p>{index + 1}</p>
-                    </div>
-                    <input
-                      value={item}
-                      onChange={(e) => handleCareerInputChange(e.target.value, index)}
-                    />
-                    {index === careerInputs.length - 1 ? (
-                      <div className='plus-minus-button'
-                      onClick={addCareerInput}
-                      ><p>+</p></div>
-                    ) : (
-                      <div className='plus-minus-button'
-                        onClick={() => removeCareerInput(index)}
-                      ><p>-</p></div>
-                    )}
-                  </div>
-                ))}
-              </>
-              :
-              <div className="inputbox">
-                <div className='name'>
-                  <p>프로필</p>
-                </div>
-                <textarea 
-                  ref={textareaRef}
-                  placeholder=''
-                  value={careerText}
-                  onChange={onChange}
-                />
-              </div>
-            }
-          </div>
-          <div className="divider"></div>
-          <div className="register view">
+        {players.map((item:any, index:any) => {
             
-          </div>
-        </div>
+          return (
+            <div className='registerPlayerBox' key={item.id}>
+              <div className="register menu">
+                <h3>프로필 사진</h3>
+                <div className="inputbox white">
+                  <ImageBox index={index} />
+                </div>
+                {
+                  index === players.length - 1 &&
+                  <div className="inputboxNoButton">* 원하시면 사진 첨부 안하셔도 됩니다.</div>
+                }
+              </div>
+              <div className="divider"></div>
+              <div className="register content">
+                <div className="inputbox">
+                  <div className='name'>
+                    <p>파트</p>
+                  </div>
+                  <input type="text" value={item.part} onChange={(e)=>{handlePartInputChange(e.target.value, index)}}/>
+                </div>
+                <div className="inputbox">
+                  <div className='name'>
+                    <p>이름</p>
+                  </div>
+                  <input type="text" value={item.name} onChange={(e)=>{handleNameInputChange(e.target.value, index)}}/>
+                </div>
+                <div className="selectButton">
+                  <div className={item.isStyleWrite === false ? "selectButton-btn seleted" : "selectButton-btn"} 
+                    onClick={()=>{handleCareerStyleChange(index, item.isStyleWrite)}}>이력형식</div>
+                  <div className={item.isStyleWrite === true ? "selectButton-btn seleted" : "selectButton-btn"} 
+                    onClick={()=>{handleCareerStyleChange(index, item.isStyleWrite)}}>글형식</div>
+                </div>
+                {
+                  item.isStyleWrite === false
+                  ?
+                  <>
+                    { item.careerInputs?.map((subItem:any, subIndex:any) => (
+                      <div key={subIndex} className='inputbox'>
+                        <div className='name2'>
+                          <p>{subIndex + 1}</p>
+                        </div>
+                        <input
+                          value={subItem}
+                          onChange={(e) => handleCareerInputChange(index, e.target.value, subIndex)}
+                        />
+                        { subIndex === item.careerInputs.length - 1 ? (
+                          <div className='plus-minus-button'
+                          onClick={()=>{addCareerInput(index, subIndex)}}
+                          ><p>+</p></div>
+                        ) : (
+                          <div className='plus-minus-button'
+                            onClick={() =>{removeCareerInput(index)}}
+                          ><p>-</p></div>
+                        )}
+                      </div>
+                    ))}
+                  </>
+                  :
+                  <div className="inputbox">
+                    <div className='name'>
+                      <p>프로필</p>
+                    </div>
+                    <textarea 
+                      ref={textareaRef}
+                      placeholder=''
+                      value={item.careerText}
+                      onChange={(e)=>{onChange(e, index)}}
+                    />
+                  </div>
+                }
+              </div>
+              <div className="divider"></div>
+              <div className="register view">
+                
+              </div>
+            </div>
+          )
+        })
+        }
+        
+        
      
         <div className="buttonbox">
           <div className="button" onClick={()=>{
-            navigate('/registerdefault'); 
+            navigate('/registerprogram'); 
           }}>
             <p>이전</p>
           </div>

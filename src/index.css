@@ -33,6 +33,14 @@
   src: url("./fonts/Pretendard-Bold.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: "Sunflower";
+  font-style: normal;
+  font-weight: 500;
+  src: url("./fonts/Sunflower-Medium.ttf") format("truetype");
+}
+
+
 body {
   margin: 0;
   font-family: "Pretendard";
