@@ -175,6 +175,26 @@
             font-size: 14px;
             color: #BDBDBD;
           }
+          .selectInput {
+            display: flex;
+            justify-content: space-between;
+
+            .sortSelectBox {
+              width: 33%;
+              height: 100%;
+              border: 1px solid #ccc;
+              box-sizing: border-box;
+              border-radius: 5px;
+              @include middle;
+            }
+            .sortSelectBox.selected {
+              border: 2px solid #777;
+            }
+            .sortSelectBox:hover {
+              border: 1px solid #777;
+              cursor: pointer;
+            }
+          }
           // datepicker 커스텀 ---------------------
           .react-datepicker__month-container {
             width: 300px;

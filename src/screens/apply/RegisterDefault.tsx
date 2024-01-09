@@ -13,6 +13,7 @@ import Select from 'react-select';
 import DatePicker from "react-datepicker";
 import  "react-datepicker/dist/react-datepicker.css" ;
 import { ko } from "date-fns/esm/locale";
+import { getDay, format } from "date-fns";
 import { SwatchesPicker} from 'react-color';
 import html2canvas from 'html2canvas';
 import { FaArrowLeft } from "react-icons/fa6";
@@ -28,6 +29,8 @@ export default function RegisterDefault(props:any) {
   // -------------------------------------------------------
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [title, setTitle] = useState('');
+  const [sort, setSort] = useState('Orchestral');
+  const [selectSort, setSelectSort] = useState(1);
   const [part, setPart] = useState('');
   const [nameEn, setNameEn] = useState('');
   const [location, setLocation] = useState('');
@@ -40,6 +43,112 @@ export default function RegisterDefault(props:any) {
   const [ticket, setTicket] = useState('');
   const [ticketReserve, setTicketReserve] = useState('');
   const [quiry, setQuiry] = useState('');  
+
+  // 구분 선택 ----------------------------------------------
+  const sortOptions = [
+    { value: 'Orchestral', label: '관현악' },
+    { value: 'Vocal', label: '성악' },
+    { value: 'Piano', label: '피아노' }
+  ];
+
+  // 파트 선택 ----------------------------------------------
+  const partOptionsOrchestral = [
+    { value: 'VIOLIN', label: 'Violin'},
+    { value: 'VIOLA', label: 'Viola'},
+    { value: 'CELLO', label: 'Cello'}, 
+    { value: 'D.BASS', label: 'D.BASS'}, 
+    { value: 'FLUTE', label: 'Flute'}, 
+    { value: 'CLARINET', label: 'Clarinet'}, 
+    { value: 'OBOE', label: 'Oboe'}, 
+    { value: 'BASSOON', label: 'Bassoon'}, 
+    { value: 'HORN', label: 'Horn'}, 
+    { value: 'TRUMPET', label: 'Trumpet'}, 
+    { value: 'TROMBONE', label: 'Trombone'}, 
+    { value: 'TUBA', label: 'Tuba'}, 
+    { value: 'HARP', label: 'Harp'}, 
+    { value: 'MARIMBA', label: 'Marimba'}
+  ];
+
+  const partOptionsVocal = [
+    { value: 'SOPRANO', label: 'Soprano' },
+    { value: 'MEZZO SOPRANO', label: 'Mezzo Soprano' },
+    { value: 'TENOR', label: 'Tenor' },
+    { value: 'BARITONE', label: 'Baritone' },
+    { value: 'BASS', label: 'Bass' },
+  ];
+
+
+  const [selectedPartOption, setSelectedPartOption] = useState({ value: '선택', label: '선택' });
+  const handleSelectPartChange = ( event : any) => {
+   setSelectedPartOption(event);
+   setPart(event.value);
+  }
+
+
+  // 지역 선택 ----------------------------------------------
+  const locationOptions = [
+    { value: '선택', label: '선택' },
+    { value: '서울', label: '서울' },
+    { value: '인천/경기', label: '인천/경기' },
+    { value: '대전/세종/충청', label: '대전/세종/충청' },
+    { value: '광주/전라', label: '광주/전라' },
+    { value: '대구/경북', label: '대구/경북' },
+    { value: '부산/경남', label: '부산/경남' },
+  ];
+
+  const [selectedLocationOption, setSelectedLocationOption] = useState(locationOptions[0]);
+  const handleSelectLocationChange = ( event : any) => {
+   setSelectedLocationOption(event);
+   setLocation(event.label);
+  }
+  console.log(date);
+
+  // 날짜 선택 ----------------------------------------------
+  const [startDate, setStartDate] = useState();
+  const handleSelectDateChange = ( event : any) => {
+    setStartDate(event);
+    const day = format(event, 'EEE', { locale: ko });
+    const copy = event.toLocaleDateString('ko-KR');
+    const splitCopy = copy.split('. ');
+    const thirdText = splitCopy[2].slice(0, -1);
+    const reformmedText = `${splitCopy[0]}년 ${splitCopy[1]}월 ${thirdText}일 (${day})`
+    setDate(reformmedText);
+  }
+
+  // 시간 선택 ----------------------------------------------
+  const timeOptions = [
+    { value: '선택', label: '선택' },
+    { value: 'AM 10:00', label: 'AM 10:00' },
+    { value: 'AM 10:30', label: 'AM 10:30' },
+    { value: 'AM 11:00', label: 'AM 11:00' },
+    { value: 'AM 11:30', label: 'AM 11:30' },
+    { value: 'PM 12:00', label: 'PM 12:00' },
+    { value: 'PM 12:30', label: 'PM 12:30' },
+    { value: 'PM 1:00', label: 'PM 1:00' },
+    { value: 'PM 1:30', label: 'PM 1:30' },
+    { value: 'PM 2:00', label: 'PM 2:00' },
+    { value: 'PM 2:30', label: 'PM 2:30' },
+    { value: 'PM 3:00', label: 'PM 3:00' },
+    { value: 'PM 3:30', label: 'PM 3:30' },
+    { value: 'PM 4:00', label: 'PM 4:00' },
+    { value: 'PM 4:30', label: 'PM 4:30' },
+    { value: 'PM 5:00', label: 'PM 5:00' },
+    { value: 'PM 5:30', label: 'PM 5:30' },
+    { value: 'PM 6:00', label: 'PM 6:00' },
+    { value: 'PM 6:30', label: 'PM 6:30' },
+    { value: 'PM 7:00', label: 'PM 7:00' },
+    { value: 'PM 7:30', label: 'PM 7:30' },
+    { value: 'PM 8:00', label: 'PM 8:00' },
+    { value: 'PM 8:30', label: 'PM 8:30' },
+
+  ];
+
+  const [selectedTimeOption, setSelectedTimeOption] = useState(timeOptions[0]);
+  const handleSelectTimeChange = ( event : any) => {
+   setSelectedTimeOption(event);
+   setTime(event.label);
+  }
+
 
   // 장소 DB 가져오기 ----------------------------------------------
   interface placeListProps {
@@ -99,88 +208,6 @@ export default function RegisterDefault(props:any) {
         setViewAutoComplete(false);
       }
     }
-  }
-  
-
-  // 파트 선택 ----------------------------------------------
-  const partOptions = [
-    { value: '선택', label: '선택' },
-    { value: 'SOPRANO', label: 'Soprano' },
-    { value: 'MEZZO SOPRANO', label: 'Mezzo Soprano' },
-    { value: 'TENOR', label: 'Tenor' },
-    { value: 'BARITONE', label: 'Baritone' },
-    { value: 'BASS', label: 'Bass' },
-  ];
-
-  const [selectedPartOption, setSelectedPartOption] = useState(partOptions[0]);
-  const handleSelectPartChange = ( event : any) => {
-   setSelectedPartOption(event);
-   setPart(event.value);
-  }
-
-
-  // 지역 선택 ----------------------------------------------
-  const locationOptions = [
-    { value: '선택', label: '선택' },
-    { value: '서울', label: '서울' },
-    { value: '인천/경기', label: '인천/경기' },
-    { value: '대전/세종/충청', label: '대전/세종/충청' },
-    { value: '광주/전라', label: '광주/전라' },
-    { value: '대구/경북', label: '대구/경북' },
-    { value: '부산/경남', label: '부산/경남' },
-  ];
-
-  const [selectedLocationOption, setSelectedLocationOption] = useState(locationOptions[0]);
-  const handleSelectLocationChange = ( event : any) => {
-   setSelectedLocationOption(event);
-   setLocation(event.label);
-  }
-
-  // 날짜 선택 ----------------------------------------------
-  const [startDate, setStartDate] = useState();
-  const handleSelectDateChange = ( event : any) => {
-    setStartDate(event);
-    
-    const copy = event.toLocaleDateString('ko-KR');
-    const splitCopy = copy.split('. ');
-    const thirdText = splitCopy[2].slice(0, -1);
-    const reformmedText = `${splitCopy[0]}년 ${splitCopy[1]}월 ${thirdText}일`
-    setDate(reformmedText);
-  }
-
-
-  // 시간 선택 ----------------------------------------------
-  const timeOptions = [
-    { value: '선택', label: '선택' },
-    { value: 'AM 10:00', label: 'AM 10:00' },
-    { value: 'AM 10:30', label: 'AM 10:30' },
-    { value: 'AM 11:00', label: 'AM 11:00' },
-    { value: 'AM 11:30', label: 'AM 11:30' },
-    { value: 'PM 12:00', label: 'PM 12:00' },
-    { value: 'PM 12:30', label: 'PM 12:30' },
-    { value: 'PM 1:00', label: 'PM 1:00' },
-    { value: 'PM 1:30', label: 'PM 1:30' },
-    { value: 'PM 2:00', label: 'PM 2:00' },
-    { value: 'PM 2:30', label: 'PM 2:30' },
-    { value: 'PM 3:00', label: 'PM 3:00' },
-    { value: 'PM 3:30', label: 'PM 3:30' },
-    { value: 'PM 4:00', label: 'PM 4:00' },
-    { value: 'PM 4:30', label: 'PM 4:30' },
-    { value: 'PM 5:00', label: 'PM 5:00' },
-    { value: 'PM 5:30', label: 'PM 5:30' },
-    { value: 'PM 6:00', label: 'PM 6:00' },
-    { value: 'PM 6:30', label: 'PM 6:30' },
-    { value: 'PM 7:00', label: 'PM 7:00' },
-    { value: 'PM 7:30', label: 'PM 7:30' },
-    { value: 'PM 8:00', label: 'PM 8:00' },
-    { value: 'PM 8:30', label: 'PM 8:30' },
-
-  ];
-
-  const [selectedTimeOption, setSelectedTimeOption] = useState(timeOptions[0]);
-  const handleSelectTimeChange = ( event : any) => {
-   setSelectedTimeOption(event);
-   setTime(event.label);
   }
   
   // 주소 입력란  ----------------------------------------------
@@ -267,7 +294,7 @@ export default function RegisterDefault(props:any) {
     formData.append("img", imageFiles[0]);
     const getParams = {
       userAccount : 'johnleedev@naver.com', userName: '이요한',
-      title: title, location: location, date: date, time : time, 
+      sort: sort, title: title, location: location, date: date, time : time, 
       place : place, address : address, 
       superViser :superViser, supporter : supporter,
       ticket :ticket, ticketReserve: ticketReserve, quiry :quiry,
@@ -284,7 +311,7 @@ export default function RegisterDefault(props:any) {
       .then((res) => {
         if (res.data.success === true) {
           alert('입력되었습니다.');
-          navigate('/registerprogram', {state : { pamphletID : res.data.pamphletID, part : part } }); 
+          navigate('/registerprogram', {state : { pamphletID : res.data.pamphletID, part : part, sort: sort } }); 
         } else {
           alert(res.data);
         }
@@ -322,14 +349,40 @@ export default function RegisterDefault(props:any) {
             </div>
             <div className="inputbox">
               <div className='name'>
+                <p>구분</p>
+              </div>
+              <div className='input selectInput'>
+                <div className={selectSort === 1 ? 'sortSelectBox selected' : 'sortSelectBox'} 
+                   onClick={()=>{setSelectSort(1); setSort(sortOptions[0].value)}}>
+                  {sortOptions[0].label}
+                </div>
+                <div className={selectSort === 2 ? 'sortSelectBox selected' : 'sortSelectBox'} 
+                    onClick={()=>{setSelectSort(2); setSort(sortOptions[1].value)}}>
+                  {sortOptions[1].label}
+                </div>
+                <div className={selectSort === 3 ? 'sortSelectBox selected' : 'sortSelectBox'} 
+                   onClick={()=>{setSelectSort(3); setSort(sortOptions[2].value); setPart('Piano')}}>
+                  {sortOptions[2].label}
+                </div>
+              </div>
+            </div>
+            <div className="inputbox">
+              <div className='name'>
                 <p>파트</p>
               </div>
-              <Select
-                className='input'
-                value={selectedPartOption}
+              { selectSort === 1 && 
+                <Select className='input' value={selectedPartOption}
                 onChange={handleSelectPartChange}
-                options={partOptions}
-              />
+                options={partOptionsOrchestral} /> 
+              }
+              { selectSort === 2 && 
+              <Select className='input' value={selectedPartOption}
+              onChange={handleSelectPartChange}
+              options={partOptionsVocal} /> 
+              }
+              { selectSort === 3 && 
+              <input type="text" onChange={(e)=>{setPart(e.target.value)}} value={part}/>
+              }
             </div>
             <div className="inputbox">
               <div className='name'>

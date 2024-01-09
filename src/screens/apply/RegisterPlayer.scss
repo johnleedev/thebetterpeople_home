@@ -125,6 +125,10 @@
           .selectButton-btn.seleted {
             border: 2px solid #8C8C8C;
           }
+          .selectButton-btn:hover {
+            background-color: #BDBDBD;
+            cursor: pointer;
+          }
         }
         
       }
@@ -149,6 +153,30 @@
         }
         
       }
+    }
+    .guest-plus-box {
+      width: 200px;
+      @include middle;
+
+      .guest-plus-button{
+        width: 50px;
+        height: 50px;
+        @include middle;
+       
+        p {
+          width: 30px;
+          height: 30px;
+          font-size: 24px;
+          @include middle;
+          border: 1px solid #8C8C8C;
+          border-radius: 5px;
+        }
+        p:hover {
+          background-color: #8C8C8C;
+          cursor: pointer;
+        }
+      }
+
     }
 
     .buttonbox {

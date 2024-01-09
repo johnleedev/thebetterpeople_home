@@ -81,6 +81,7 @@ export default function RegisterProgram (props:any) {
     inputs[index].composition[compositionIdx] = text;
     const viewAutoComplete = [...viewAutoCompleteComposition];
     viewAutoComplete[index] = true;
+    setDropDownItemIndexCompostion(-1);
     setViewAutoCompleteComposition(viewAutoComplete);
     handleAutoCompleteComposition(text);
     setProgramInputs(inputs);
@@ -149,6 +150,7 @@ export default function RegisterProgram (props:any) {
     inputs[index].songName[songIdx] = text;
     const viewAutoComplete = [...viewAutoCompleteSongName];
     viewAutoComplete[index] = true;
+    setDropDownItemIndexSongName(-1);
     setViewAutoCompleteSongName(viewAutoComplete);
     handleAutoCompleteSongName(text);
     setProgramInputs(inputs);
@@ -263,13 +265,14 @@ export default function RegisterProgram (props:any) {
       .post(`${MainURL}/pamphlets/postprogram`, {
         userAccount : 'johnleedev@naver.com', userName: '이요한',
         pamphletID : location.state.pamphletID,
+        sort : location.state.sort,
         program : JSON.stringify(programInputs),
         subProgram : JSON.stringify(subProgramInputs.slice(1))
       })
       .then((res) => {
         if (res.data === true) {
           alert('입력되었습니다.');
-          navigate('/registerplayer', {state : { pamphletID : location.state.pamphletID, part : location.state.part } }); 
+          navigate('/registerplayer', {state : { pamphletID : location.state.pamphletID, part : location.state.part, sort : location.state.sort } }); 
         } else {
           alert(res.data);
         }
@@ -370,7 +373,7 @@ export default function RegisterProgram (props:any) {
                                     <>
                                       <div className='dropDownList' style={{fontSize:10}}>(아래 화살표를 눌러서 선택하세요)</div>
                                       { 
-                                        dropDownListCompostion.map((item:any, index:any)=>{
+                                        dropDownListCompostion.slice(0, 10).map((item:any, index:any)=>{
                                           return(
                                             <div key={index} className={dropDownItemIndexCompostion === index ? 'dropDownList selected' : 'dropDownList'}>{item.composition}</div>
                                           )
@@ -426,7 +429,7 @@ export default function RegisterProgram (props:any) {
                                     <>
                                       <div className='dropDownList' style={{fontSize:10}}>(아래 화살표를 눌러서 선택하세요)</div>
                                       { 
-                                        dropDownListSongName.map((item:any, index:any)=>{
+                                        dropDownListSongName.slice(0, 10).map((item:any, index:any)=>{
                                           return(
                                             <div key={index} className={dropDownItemIndexSongName === index ? 'dropDownList selected' : 'dropDownList'}>{item.songName}</div>
                                           )

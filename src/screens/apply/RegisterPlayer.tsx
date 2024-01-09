@@ -15,8 +15,10 @@ export default function RegisterPlayer (props:any) {
 
   let navigate = useNavigate();
   const location = useLocation(); 
+  const sort = location.state.sort;
+  
   const userPart = location.state.part;
-
+  
   interface playerProps {
     part: string;
     name: string;
@@ -26,10 +28,24 @@ export default function RegisterPlayer (props:any) {
     isStyleWrite: boolean;
   }
 
-  const [players, setPlayers] = useState<Array<playerProps>>([
-    { part: userPart ? userPart : '', name: '', imageFiles: [], careerInputs: ['', '', '', ''], careerText: "", isStyleWrite: false },
-    { part: 'Piano', name: '', imageFiles: [], careerInputs: ['', '', '', ''], careerText: "", isStyleWrite: false }
-  ]);
+  const [players, setPlayers] = useState<Array<playerProps>>(
+    sort === 'Piano' 
+    ?
+    [
+      { part: userPart ? userPart : '', name: '', imageFiles: [], careerInputs: ['', '', '', ''], careerText: "", isStyleWrite: false }
+    ]
+    :
+    [
+      { part: userPart ? userPart : '', name: '', imageFiles: [], careerInputs: ['', '', '', ''], careerText: "", isStyleWrite: false },
+      { part: 'Piano', name: '', imageFiles: [], careerInputs: ['', '', '', ''], careerText: "", isStyleWrite: false }
+    ]
+  );
+
+  // 연주자 박스 추가
+  const addProgramInput = () => {
+    setPlayers([...players, { part: '', name: '', imageFiles: [], careerInputs: ['', '', '', ''], careerText: "", isStyleWrite: false }]);
+  };
+  
 
   // careerTextArea 높이 조절
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -193,7 +209,7 @@ export default function RegisterPlayer (props:any) {
                   <ImageBox index={index} />
                 </div>
                 {
-                  index === players.length - 1 &&
+                  index === players.length - 1 && sort !== 'Piano' &&
                   <div className="inputboxNoButton">* 원하시면 사진 첨부 안하셔도 됩니다.</div>
                 }
               </div>
@@ -207,7 +223,7 @@ export default function RegisterPlayer (props:any) {
                 </div>
                 <div className="inputbox">
                   <div className='name'>
-                    <p>이름</p>
+                    <p>이름(한글)</p>
                   </div>
                   <input type="text" value={item.name} onChange={(e)=>{handleNameInputChange(e.target.value, index)}}/>
                 </div>
@@ -264,9 +280,17 @@ export default function RegisterPlayer (props:any) {
           )
         })
         }
-        
-        
-     
+        {
+          players.length === 2 &&
+          <div style={{ display:'flex'}} className='guest-plus-box'>
+              * 협연 연주자 추가하기
+              <div className='guest-plus-button'
+                onClick={addProgramInput}
+                >
+                  <p>+</p>
+              </div>
+          </div>
+        }
         <div className="buttonbox">
           <div className="button" onClick={()=>{
             navigate('/registerprogram'); 
