@@ -7,7 +7,6 @@ import { useLocation } from 'react-router-dom';
 import axios from 'axios'
 import MainURL from "../../MainURL";
 import Loading from '../../components/Loading';
-import { json } from 'stream/consumers';
 
 interface postProps {
   id : number,
@@ -75,17 +74,23 @@ export default function SoloDetail (props:any) {
       setProfileData(copy);
     }
   };
+  console.log(typeof postData);
+  console.log(typeof programData);
+  console.log(typeof profileData);
 
   useEffect(() => {
     fetchPosts();
   }, []);
 
-  console.log(profileData);
-
   const posterImageURL = `${MainURL}/images/pamphlet_default/${postData?.imageName}`
   
   
-  return  postData === undefined || programData === undefined || profileData === undefined ? <Loading /> : (
+  return  postData === undefined || programData.length === 0 || profileData.length === 0
+    ? (
+    <div style={{flex:1, width:'100%', height:'80vh'}}>
+      <Loading /> 
+    </div>
+    ) : (
     <div className='soloDetail'>
 
       <div className="topimage">

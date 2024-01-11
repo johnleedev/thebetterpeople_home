@@ -5,6 +5,7 @@ import logo from "../../images/logo-white.png"
 import Footer from '../../components/Footer';
 import Title from '../../components/Title';
 import { useDropzone } from 'react-dropzone'
+import imageCompression from "browser-image-compression";
 import axios from 'axios'
 import MainURL from "../../MainURL";
 import { useNavigate } from 'react-router-dom';
@@ -13,7 +14,7 @@ import Select from 'react-select';
 import DatePicker from "react-datepicker";
 import  "react-datepicker/dist/react-datepicker.css" ;
 import { ko } from "date-fns/esm/locale";
-import { getDay, format } from "date-fns";
+import { format } from "date-fns";
 import { SwatchesPicker} from 'react-color';
 import html2canvas from 'html2canvas';
 import { FaArrowLeft } from "react-icons/fa6";
@@ -21,6 +22,7 @@ import { IoIosArrowRoundDown } from "react-icons/io";
 import { IoIosArrowRoundUp } from "react-icons/io";
 import { SlMagnifier } from "react-icons/sl";
 import DaumPostcode from 'react-daum-postcode';
+import Loading from '../../components/Loading';
 
 export default function RegisterDefault(props:any) {
 
@@ -101,7 +103,6 @@ export default function RegisterDefault(props:any) {
    setSelectedLocationOption(event);
    setLocation(event.label);
   }
-  console.log(date);
 
   // 날짜 선택 ----------------------------------------------
   const [startDate, setStartDate] = useState();
@@ -251,19 +252,38 @@ export default function RegisterDefault(props:any) {
 
   // 이미지 첨부 함수 ----------------------------------------------
 
-  const [selectWidth, setSelectWidth] = useState(450);
-  const [selectHeight, setSelectHeight] = useState(600);
-    
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    setImageFiles(acceptedFiles);
-  }, []);
+  const [imageLoading, setImageLoading] = useState<boolean>(false);
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
+    try {
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1000
+      };
+      const resizedFiles = await Promise.all(
+        acceptedFiles.map(async (file) => {
+          setImageLoading(true);
+          const resizingBlob = await imageCompression(file, options);
+          setImageLoading(false);
+          return resizingBlob;
+        })
+      );
+      const copy = new File(resizedFiles, acceptedFiles[0].name, { type: acceptedFiles[0].type });
+      setImageFiles([copy]);
+    } catch (error) {
+      console.error('이미지 리사이징 중 오류 발생:', error);
+    }
+  }, [setImageFiles]);
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
   
   // controlBox --------------------------------------------------------------------------------------------
   // 스타일 변경
   const [selectStyle, setSelectStyle] = useState(1);
-  
-  // 색상 변경  ----------------------------------------------
+
+  // 이미지 사이즈 변경
+  const [selectWidth, setSelectWidth] = useState(450);
+  const [selectHeight, setSelectHeight] = useState(600);
+
+  // 색상 변경 
 
   const [showColorBox1, setShowColorBox1] = useState<boolean>(false)
   const [selectColor1, setSelectColor1] = useState('#fff');
@@ -564,10 +584,19 @@ export default function RegisterDefault(props:any) {
                       style={{ width: '100%', height: '100%'}}
                     />
                     ) : (
-                    <div {...getRootProps()} className="imageDropzoneStyle" >
-                      <input {...getInputProps()} />
-                      <div className='imageplus'>+</div>
-                    </div>
+                      <>
+                      {
+                        imageLoading ?
+                        <div style={{width:'100%', height:'100%', position:'absolute'}}>
+                          <Loading/>
+                        </div>
+                        :
+                        <div {...getRootProps()} className="imageDropzoneStyle" >
+                          <input {...getInputProps()} />
+                          <div className='imageplus'>+</div>
+                        </div>
+                      } 
+                      </>
                     )
                   }
                 </div>
@@ -586,7 +615,7 @@ export default function RegisterDefault(props:any) {
             <>
             <div className="register poster">
               <div className='backBtn' onClick={()=>{setSelectStylePoster(0)}}><FaArrowLeft /></div>
-              { imageFiles.length > 0 ? null : <p className='noticeText'>* 먼저 프로필 이미지 파일을 첨부해 주세요</p> }
+              { imageFiles.length > 0 ? null : <p className='noticeText'>* 먼저 프로필 이미지 파일을 첨부해 주세요(2MB이하만 가능)</p> }
               <div className='imageContainer'ref={captureArea}>
                 <div
                   className="imageBox" 
@@ -598,10 +627,19 @@ export default function RegisterDefault(props:any) {
                       style={{ width: '100%', height: '100%'}}
                     />
                     ) : (
-                    <div {...getRootProps()} className="imageDropzoneStyle" >
-                      <input {...getInputProps()} />
-                      <div className='imageplus'>+</div>
-                    </div>
+                      <>
+                      {
+                        imageLoading ?
+                        <div style={{width:'100%', height:'100%', position:'absolute'}}>
+                          <Loading/>
+                        </div>
+                        :
+                        <div {...getRootProps()} className="imageDropzoneStyle" >
+                          <input {...getInputProps()} />
+                          <div className='imageplus'>+</div>
+                        </div>
+                      } 
+                      </>
                     )
                   }
                 </div>

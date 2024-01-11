@@ -3,22 +3,24 @@ import './RegisterPlayer.scss'
 import company from "../../images/notice/company.jpg"
 import Footer from '../../components/Footer';
 import Title from '../../components/Title';
-import { useDropzone } from 'react-dropzone'
+import Dropzone from 'react-dropzone'
+import imageCompression from "browser-image-compression";
 import axios from 'axios'
 import MainURL from "../../MainURL";
 import { useNavigate, useLocation } from 'react-router-dom';
 import SubTitle from '../../components/SubTitle';
-
+import Loading from '../../components/Loading';
 
 
 export default function RegisterPlayer (props:any) {
 
   let navigate = useNavigate();
   const location = useLocation(); 
-  const sort = location.state.sort;
-  
-  const userPart = location.state.part;
-  
+  // const sort = location.state.sort;
+  // const userPart = location.state.part;
+  const sort = 'Piano';
+  const userPart = 'Piano';
+    
   interface playerProps {
     part: string;
     name: string;
@@ -104,44 +106,30 @@ export default function RegisterPlayer (props:any) {
   };
 
   // ---------------------------------------------------------------
-
-  interface BoxProps {
-    index: number;
-  }
-
-  const ImageBox: React.FC<BoxProps> = ({ index }) => {
-    
-    const onDrop = useCallback((acceptedimageFiles: File[]) => {
+  const [imageLoading, setImageLoading] = useState<boolean>(false);
+  const onDrop = useCallback(async (acceptedFiles: File[], index:number) => {
+    try {
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 500
+      };
+      const resizedFiles = await Promise.all(
+        acceptedFiles.map(async (file) => {
+          setImageLoading(true);
+          const resizingBlob = await imageCompression(file, options);
+          setImageLoading(false);
+          return resizingBlob;
+        })
+      );
       const inputs = [...players];
-      inputs[index].imageFiles = acceptedimageFiles;
-    }, []);
-
-    const { getRootProps, getInputProps } = useDropzone({ onDrop });
-    
-    return (
-      <div className="boxStyle">
-        {players[index].imageFiles.length > 0 && 
-          <div className='imagedelete' onClick={()=>{
-            const copy = [...players];
-            copy[index].imageFiles = [];
-            setPlayers(copy);
-          }}>-</div>
-        }
-        {players[index].imageFiles.length > 0 ? (
-          <img
-            src={URL.createObjectURL(players[index].imageFiles[0])}
-            style={{ width: '100%', height: '100%'}}
-          />
-          ) : (
-          <div {...getRootProps()} className="dropzoneStyle">
-            <input {...getInputProps()} />
-            <div className='imageplus'>+</div>
-          </div>
-          )
-        }
-      </div>
-    );
-  };
+      const copy = new File(resizedFiles, acceptedFiles[0].name, { type: acceptedFiles[0].type });
+      inputs[index].imageFiles = [copy];
+      setPlayers(inputs);
+    } catch (error) {
+      console.error('이미지 리사이징 중 오류 발생:', error);
+    }
+  }, []);
+      
   // ---------------------------------------------------------------
   // 출연진 정보 등록
   const registerPost = async () => {
@@ -154,7 +142,8 @@ export default function RegisterPlayer (props:any) {
         getParams: {
           userAccount: 'johnleedev@naver.com',
           userName: '이요한',
-          pamphletID: location.state.pamphletID,
+          // pamphletID: location.state.pamphletID,
+          pamphletID: 12,
           part: player.part,
           name: player.name,
           imageName: player.imageFiles[0]?.name,
@@ -206,7 +195,40 @@ export default function RegisterPlayer (props:any) {
               <div className="register menu">
                 <h3>프로필 사진</h3>
                 <div className="inputbox white">
-                  <ImageBox index={index} />
+                <div className="boxStyle">
+                  {players[index].imageFiles.length > 0 && 
+                    <div className='imagedelete' onClick={()=>{
+                      const copy = [...players];
+                      copy[index].imageFiles = [];
+                      setPlayers(copy);
+                    }}>-</div>
+                  }
+                  {players[index].imageFiles.length > 0 ? (
+                    <img
+                      src={URL.createObjectURL(players[index].imageFiles[0])}
+                      style={{ width: '100%', height: '100%'}}
+                    />
+                    ) : (
+                      <>
+                      {
+                        imageLoading ?
+                        <div style={{width:'100%', height:'100%', position:'absolute'}}>
+                          <Loading/>
+                        </div>
+                        :
+                        <Dropzone onDrop={(e)=>{onDrop(e, index)}}>
+                          {({ getRootProps, getInputProps }) => (
+                            <div {...getRootProps({imageIndex : index})} className="dropzoneStyle">
+                              <input {...getInputProps()} />
+                              <div className='imageplus'>+</div>
+                            </div>
+                          )}
+                        </Dropzone>
+                      }
+                      </>
+                    )
+                  }
+                </div>
                 </div>
                 {
                   index === players.length - 1 && sort !== 'Piano' &&
@@ -280,17 +302,14 @@ export default function RegisterPlayer (props:any) {
           )
         })
         }
-        {
-          players.length === 2 &&
-          <div style={{ display:'flex'}} className='guest-plus-box'>
-              * 협연 연주자 추가하기
-              <div className='guest-plus-button'
-                onClick={addProgramInput}
-                >
-                  <p>+</p>
-              </div>
-          </div>
-        }
+        <div style={{ display:'flex'}} className='guest-plus-box'>
+            * 협연 연주자 추가하기
+            <div className='guest-plus-button'
+              onClick={addProgramInput}
+              >
+                <p>+</p>
+            </div>
+        </div>
         <div className="buttonbox">
           <div className="button" onClick={()=>{
             navigate('/registerprogram'); 
