@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import company from "../../images/notice/company.jpg"
-import './Solo.scss'
+import './Pamphlets.scss'
 import Title from '../../components/Title';
 import Footer from '../../components/Footer';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
 import MainURL from "../../MainURL";
 
-export default function Solo(props:any) {
+export default function Pamphlets (props:any) {
 
   let navigate = useNavigate();
 
@@ -39,7 +39,7 @@ export default function Solo(props:any) {
   
   // State 변수 추가
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const itemsPerPage = 5; // 한 페이지당 표시될 리스트 수
+  const itemsPerPage = 10; // 한 페이지당 표시될 리스트 수
   const totalPages = Math.ceil(postList.length / itemsPerPage);
 
   // 리스트를 현재 페이지에 해당하는 부분만 필터링
@@ -78,7 +78,7 @@ export default function Solo(props:any) {
               return(
                 <div key={item.id}
                   onClick={()=>{
-                  navigate('/solodetail', {state: { ...item}})
+                  navigate('/detail', {state: { ...item}})
                 }}>
                   <div style={{width: '100%', height: '1px', backgroundColor: '#BDBDBD'}}></div>
                   <div className='list-contentbox'>

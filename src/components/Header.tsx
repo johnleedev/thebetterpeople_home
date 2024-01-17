@@ -97,11 +97,11 @@ export default function Header () {
 
             <ul className="container">
               <li className="item">
-                <h4 className="item__name" onClick={()=>{navigate('/solo'); setMainboxView(false)}}>
+                <h4 className="item__name" onClick={()=>{navigate('/pamphlets'); setMainboxView(false)}}>
                   e-팜플렛 보기
                 </h4>
                 <ul className="item__menubox">
-                  <li className="item__menu" onClick={()=>{navigate('/solo'); setMainboxView(false)}}>독창회&독주회</li>
+                  <li className="item__menu" onClick={()=>{navigate('/pamphlets'); setMainboxView(false)}}>독창회&독주회</li>
                   <li className="item__menu">소형 연주회(2~3인)</li>
                   <li className="item__menu">중형 연주회(4~10인)</li>
                   <li className="item__menu">대형 연주회(10인이상)</li>

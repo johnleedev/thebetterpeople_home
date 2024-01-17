@@ -8,12 +8,15 @@ import axios from 'axios'
 import MainURL from "../../MainURL";
 import { useNavigate, useLocation } from 'react-router-dom';
 import SubTitle from '../../components/SubTitle';
-
+import { FaArrowLeft } from "react-icons/fa6";
+import Loading from '../../components/Loading';
 
 export default function RegisterProgram (props:any) {
 
   let navigate = useNavigate();
   const location = useLocation(); 
+  const sort = location.state.sort;
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   interface songListProps {
     id : number,
@@ -26,8 +29,8 @@ export default function RegisterProgram (props:any) {
 
   // 게시글 가져오기
   const fetchPosts = async () => {
-    const res = await axios.get(`${MainURL}/datacontrol/datasongvocal`)
-    if (res) {
+    let res = await axios.get(`${MainURL}/datacontrol/getsongdata/${sort}`);
+    if (res !== undefined ) {
       let copy = res.data;
       setSongList(copy);
     }
@@ -69,6 +72,15 @@ export default function RegisterProgram (props:any) {
     setProgramInputs(inputs);
   };
 
+  // 프로그램 박스 스타일 다시 선택 
+  const handleStyleReSelectedChange = (index: number) => {
+    const inputs = [...programInputs];
+    inputs[index].composition = [""];
+    inputs[index].songName = [""];
+    inputs[index].styleSelected = 0;
+    setProgramInputs(inputs);
+  };
+
   // -----------------------------------------------------------------
   const [viewAutoCompleteComposition, setViewAutoCompleteComposition] = useState(Array(programInputs.length).fill(false));  
   const [dropDownListCompostion, setDropDownListCompostion] = useState<songListProps[]>([]);
@@ -87,7 +99,7 @@ export default function RegisterProgram (props:any) {
     setProgramInputs(inputs);
   };
 
-  // 자동완성  ----------------------------------------------
+  // 자동완성  -----------------
   const handleAutoCompleteComposition = (text : string ) => {
     const copy = songList.filter((e: any) => e.composition.includes(text) === true);
     copy.sort((a, b) => (a.composition > b.composition) ? 1 : -1);
@@ -156,7 +168,7 @@ export default function RegisterProgram (props:any) {
     setProgramInputs(inputs);
   };
   
-  // 자동완성  ----------------------------------------------
+  // 자동완성  --------------
   const handleAutoCompleteSongName = (text : string ) => {
     const copy = songList.filter((e: any) => e.songName.includes(text) === true);
     copy.sort((a, b) => (a.songName > b.songName) ? 1 : -1);
@@ -206,6 +218,7 @@ export default function RegisterProgram (props:any) {
       setProgramInputs(inputs);
     }
   };
+
   // -----------------------------------------------------------------
   // 소제목 입력 박스 
   interface SubProgramProps {
@@ -214,11 +227,11 @@ export default function RegisterProgram (props:any) {
   }
 
   // 소제목 입력 데이터
-  const [subProgramInputs, setSubProgramInputs] = useState<SubProgramProps[]>([{programNumber:0, songName:[]}])
+  const [subProgramInputs, setSubProgramInputs] = useState<SubProgramProps[]>([])
   // 소제목 내용 변경
   const handleSubProgramInputChange = (programNum: number, text: string, songNameIndex: number) => {
     const inputs = [...subProgramInputs];
-    const inputData = subProgramInputs.find((e)=> e.programNumber === programNum);
+    const inputData = inputs.find((e)=> e.programNumber === programNum);
     if (inputData) {
       inputData.songName[songNameIndex] = text;
       setSubProgramInputs([...inputs]);
@@ -232,7 +245,7 @@ export default function RegisterProgram (props:any) {
   // 입력란 추가
   const addSubProgramInput = (programNum: number, songNameIndex: number) => {
     const inputs = [...subProgramInputs];
-    const inputData = subProgramInputs.find((e)=> e.programNumber === programNum);
+    const inputData = inputs.find((e)=> e.programNumber === programNum);
     if (inputData) {
       inputData.songName[songNameIndex + 1] = "";
       setSubProgramInputs([...inputs]);
@@ -241,17 +254,80 @@ export default function RegisterProgram (props:any) {
   // 입력란 삭제
   const removeSubProgramInput = (programNum: number, songNameIndex: number) => {
     const inputs = [...subProgramInputs];
-    const inputData = subProgramInputs.find((e)=> e.programNumber === programNum);
+    const inputData = inputs.find((e)=> e.programNumber === programNum);
     if (inputData) {
       inputData?.songName.splice(songNameIndex, 1);
       setSubProgramInputs(inputs);
     }
   };
   // -----------------------------------------------------------------
+  // 곡설명 입력 박스 
+  interface NoticeProps {
+    programNumber: number | null;
+    notice : string;
+    view : boolean;
+  }
 
+  // 곡설명 입력 데이터
+  const [noticeInputs, setNoticeInputs] = useState<NoticeProps[]>([])
+
+  // 곡설명 입력창 생성
+  const handleNoticeViewChange = (programNum: number) => {
+    const inputs = [...noticeInputs];
+    setNoticeInputs([...inputs, {programNumber:programNum, notice:'', view:true}]);
+  };
+  // 곡설명 입력창 삭제
+  const handleNoticeViewDelete = (programNum: number) => {
+    const inputs = [...noticeInputs];
+    const inputData = inputs.filter((e)=> e.programNumber !== programNum);
+    setNoticeInputs(inputData);
+  };
+  // 곡설명 내용 변경
+  const handleNoticeInputChange = (programNum: number, text: string) => {
+    const inputs = [...noticeInputs];
+    const inputData = inputs.find((e)=> e.programNumber === programNum);
+    if (inputData) {
+      inputData.notice = text;
+      setNoticeInputs([...inputs]);
+    }
+  };
+
+  // -----------------------------------------------------------------
+  // 가사 입력 박스 
+  interface lyricsProps {
+    programNumber: number | null;
+    lyrics : string;
+    view : boolean;
+  }
+
+  // 곡설명 입력 데이터
+  const [lyricsInputs, setLyricsInputs] = useState<lyricsProps[]>([])
+
+  // 곡설명 입력창 생성
+  const handleLyricsViewChange = (programNum: number) => {
+    const inputs = [...lyricsInputs];
+    setLyricsInputs([...inputs, {programNumber:programNum, lyrics:'', view:true}]);
+  };
+  // 곡설명 입력창 삭제
+  const handleLyricsViewDelete = (programNum: number) => {
+    const inputs = [...lyricsInputs];
+    const inputData = inputs.filter((e)=> e.programNumber !== programNum);
+    setLyricsInputs(inputData);
+  };
+  // 곡설명 내용 변경
+  const handleLyricsInputChange = (programNum: number, text: string) => {
+    const inputs = [...lyricsInputs];
+    const inputData = inputs.find((e)=> e.programNumber === programNum);
+    if (inputData) {
+      inputData.lyrics = text;
+      setLyricsInputs([...inputs]);
+    }
+  };
+
+  // -----------------------------------------------------------------
   
   // InterMission
-  const handleInterMissionInsert = (index: number ) => {
+  const handleInterMissionInsert = (index: number) => {
     const inputs = [...programInputs];
     inputs[index].composition[0] = 'InterMission';
     inputs[index].songName[0] = 'InterMission';
@@ -261,18 +337,21 @@ export default function RegisterProgram (props:any) {
 
   // 프로그램 팜플렛 등록
   const registerProgram = async () => {
+    await setIsLoading(true);
     axios 
       .post(`${MainURL}/pamphlets/postprogram`, {
         userAccount : 'johnleedev@naver.com', userName: '이요한',
         pamphletID : location.state.pamphletID,
         sort : location.state.sort,
         program : JSON.stringify(programInputs),
-        subProgram : JSON.stringify(subProgramInputs.slice(1))
+        subProgram : JSON.stringify(subProgramInputs),
+        notice : JSON.stringify(noticeInputs),
+        lyrics : JSON.stringify(lyricsInputs),
       })
       .then((res) => {
         if (res.data === true) {
           alert('입력되었습니다.');
-          navigate('/registerplayer', {state : { pamphletID : location.state.pamphletID, part : location.state.part, sort : location.state.sort } }); 
+          navigate('/registerplayer', {state : { pamphletID : location.state.pamphletID, part : location.state.part, sort : location.state.sort }});
         } else {
           alert(res.data);
         }
@@ -282,7 +361,12 @@ export default function RegisterProgram (props:any) {
       })
   };
 
-  return (
+  return isLoading
+    ? (
+    <div style={{flex:1, width:'100%', height:'80vh'}}>
+      <Loading /> 
+    </div>
+    ) : (
     <div className="apply">
 
       <div className="topimage">
@@ -292,12 +376,16 @@ export default function RegisterProgram (props:any) {
       <div className="inner">
 
         <Title name={'등록하기'}/>
-        <SubTitle name='연주회 순서'/>
+
+        <SubTitle name='STEP 2.'/>
+
 
         {programInputs?.map((item, index)=>{
 
           const subData = subProgramInputs.find((e)=> e.programNumber === item.number);
-                  
+          const noticeData = noticeInputs.find((e)=> e.programNumber === item.number);
+          const lyricsData = lyricsInputs.find((e)=> e.programNumber === item.number);
+
           return (
             <div key={index}>
               
@@ -336,9 +424,14 @@ export default function RegisterProgram (props:any) {
                     {
                       item.styleSelected === 5
                       ?
-                      <div className="intermission">INTERMISSION</div>
+                      <div className="register content">
+                        <div className='backBtn' onClick={()=>{handleStyleReSelectedChange(index)}}><FaArrowLeft /></div>
+                        <div className="intermission">INTERMISSION</div>
+                      </div>
                       :
                       <div className="register content">
+                        <div className='backBtn' onClick={()=>{handleStyleReSelectedChange(index)}}><FaArrowLeft /></div>
+                        {/* 작곡가 ------------------------------------------------------------------------------- */}
                         {
                           item.composition.map((compositions:any, compositionIndex:any)=>{
                             return (
@@ -364,22 +457,15 @@ export default function RegisterProgram (props:any) {
                                   onCompositionStart={() => setIsComposingCompostion(true)}
                                   onCompositionEnd={() => setIsComposingCompostion(false)}
                                 />
-                                { item.composition[compositionIndex] !== '' && viewAutoCompleteComposition[index] &&
+                                { item.composition[compositionIndex] !== '' && viewAutoCompleteComposition[index] && dropDownListCompostion.length > 0 &&
                                   <div className="autoComplete">
-                                    { dropDownListCompostion.length === 0 && (
-                                      <div className='dropDownList'>해당하는 단어가 없습니다</div>
-                                    )}
-                                    { dropDownListCompostion.length > 0 && 
-                                    <>
-                                      <div className='dropDownList' style={{fontSize:10}}>(아래 화살표를 눌러서 선택하세요)</div>
-                                      { 
-                                        dropDownListCompostion.slice(0, 10).map((item:any, index:any)=>{
-                                          return(
-                                            <div key={index} className={dropDownItemIndexCompostion === index ? 'dropDownList selected' : 'dropDownList'}>{item.composition}</div>
-                                          )
-                                        })
-                                      }
-                                    </>  
+                                    <div className='dropDownList' style={{fontSize:10}}>(아래 화살표를 눌러서 선택하세요)</div>
+                                    { 
+                                      dropDownListCompostion.slice(0, 10).map((item:any, index:any)=>{
+                                        return(
+                                          <div key={index} className={dropDownItemIndexCompostion === index ? 'dropDownList selected' : 'dropDownList'}>{item.composition}</div>
+                                        )
+                                      })
                                     }
                                   </div>  
                                 }     
@@ -401,32 +487,29 @@ export default function RegisterProgram (props:any) {
                             )
                           })
                         }
+                        {/* 곡명 ------------------------------------------------------------------------------- */}
                         {
                           item.songName.map((songs:any, songIndex:any)=>{
                             return(
-                              <div className='inputbox'>
-                                <div className='name'>
-                                  { item.styleSelected === 3 ? <p>소품제목</p> : <p>곡명</p>}
-                                </div>
-                                <input type="text" 
-                                  value={songs}
-                                  onChange={(e) => handleSongNameChange(index, e.target.value, songIndex)}
-                                  onBlur={()=>{
-                                    const viewAutoComplete = [...viewAutoCompleteSongName];
-                                    viewAutoComplete[index] = false;
-                                    setViewAutoCompleteSongName(viewAutoComplete);
-                                  }}
-                                  onKeyDown={(e)=>{handleDropDownKeySongName(e, index, songIndex)}}
-                                  onCompositionStart={() => setIsComposingSongName(true)}
-                                  onCompositionEnd={() => setIsComposingSongName(false)}
-                                />
-                                { item.songName[songIndex] !== '' && viewAutoCompleteSongName[index] &&
-                                  <div className="autoComplete">
-                                    { dropDownListSongName.length === 0 && (
-                                      <div className='dropDownList'>해당하는 단어가 없습니다</div>
-                                    )}
-                                    { dropDownListSongName.length > 0 && 
-                                    <>
+                              <div key={songIndex}>
+                                <div className='inputbox'>
+                                  <div className='name'>
+                                    { item.styleSelected === 3 ? <p>소품제목</p> : <p>곡명</p>}
+                                  </div>
+                                  <input type="text" 
+                                    value={songs}
+                                    onChange={(e) => handleSongNameChange(index, e.target.value, songIndex)}
+                                    onBlur={()=>{
+                                      const viewAutoComplete = [...viewAutoCompleteSongName];
+                                      viewAutoComplete[index] = false;
+                                      setViewAutoCompleteSongName(viewAutoComplete);
+                                    }}
+                                    onKeyDown={(e)=>{handleDropDownKeySongName(e, index, songIndex)}}
+                                    onCompositionStart={() => setIsComposingSongName(true)}
+                                    onCompositionEnd={() => setIsComposingSongName(false)}
+                                  />
+                                  { item.songName[songIndex] !== '' && viewAutoCompleteSongName[index] && dropDownListSongName.length > 0 &&
+                                    <div className="autoComplete">
                                       <div className='dropDownList' style={{fontSize:10}}>(아래 화살표를 눌러서 선택하세요)</div>
                                       { 
                                         dropDownListSongName.slice(0, 10).map((item:any, index:any)=>{
@@ -435,28 +518,97 @@ export default function RegisterProgram (props:any) {
                                           )
                                         })
                                       }
-                                    </>  
-                                    }
-                                  </div>  
-                                }     
+                                    </div>  
+                                  }
+                                  {
+                                    item.styleSelected === 2 &&
+                                    <>
+                                      { songIndex === item.songName.length - 1 ? (
+                                        <div className='song-plus-minus-button'
+                                          onClick={()=> addSongNameInput(item.number, songIndex)}
+                                        ><p>+</p></div>
+                                      ) : (
+                                        <div className='song-plus-minus-button'
+                                          onClick={() => removeSongNameInput(item.number, songIndex)}
+                                        ><p>-</p></div>
+                                      )}
+                                    </>
+                                  }
+                                </div>
+                                {/* 곡설명 ------------------------------------------------------------------------------- */}
                                 {
-                                  item.styleSelected === 2 &&
+                                  noticeData?.view === true
+                                  ?
+                                  <div className="register notice">
+                                    <div className='inputbox'>
+                                      <div className='name'>
+                                        <PiArrowElbowDownRightThin/>
+                                        <h4>곡설명</h4>
+                                        <p className='notice-x'
+                                          onClick={()=>{handleNoticeViewDelete(item.number)}}
+                                        >x</p>
+                                      </div>
+                                      <textarea
+                                        onChange={(e) => handleNoticeInputChange(item.number, e.target.value)}
+                                      />
+                                    </div>
+                                  </div>
+                                  :
+                                  <div className="register notice">
+                                    <div className='inputbox notice'>
+                                      <div className='name'>
+                                      </div>
+                                      <div className='button'
+                                        onClick={()=>{handleNoticeViewChange(item.number)}}
+                                      >
+                                        <h4>곡설명 입력하기</h4>
+                                        <p>(선택)</p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                }
+                                {/* 가사 ------------------------------------------------------------------------------- */}
+                                {
+                                  sort === 'Vocal' &&
                                   <>
-                                    { songIndex === item.songName.length - 1 ? (
-                                      <div className='song-plus-minus-button'
-                                        onClick={()=> addSongNameInput(item.number, songIndex)}
-                                      ><p>+</p></div>
-                                    ) : (
-                                      <div className='song-plus-minus-button'
-                                        onClick={() => removeSongNameInput(item.number, songIndex)}
-                                      ><p>-</p></div>
-                                    )}
+                                  {
+                                    lyricsData?.view === true
+                                    ?
+                                    <div className="register notice">
+                                      <div className='inputbox'>
+                                        <div className='name'>
+                                          <PiArrowElbowDownRightThin/>
+                                          <h4>가사</h4>
+                                          <p className='notice-x'
+                                            onClick={()=>{handleLyricsViewDelete(item.number)}}
+                                          >x</p>
+                                        </div>
+                                        <textarea
+                                          onChange={(e) => handleLyricsInputChange(item.number, e.target.value)}
+                                        />
+                                      </div>
+                                    </div>
+                                    :
+                                    <div className="register notice">
+                                      <div className='inputbox notice'>
+                                        <div className='name'>
+                                        </div>
+                                        <div className='button'
+                                          onClick={()=>{handleLyricsViewChange(item.number)}}
+                                        >
+                                          <h4>가사 입력하기</h4>
+                                          <p>(선택)</p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  }
                                   </>
                                 }
                               </div>
                             )
                           })
                         }
+                        {/* 소제목 ------------------------------------------------------------------------------- */}
                         {
                           item.styleSelected === 3 &&
                           <div className="register subContent">

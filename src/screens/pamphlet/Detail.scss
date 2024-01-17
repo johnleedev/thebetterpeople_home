@@ -108,6 +108,7 @@
           text-align: left;
           margin-top: 50px;
           margin-bottom: 50px;
+          position: relative;
 
           .InterMission {
             font-size: 24px;
@@ -116,9 +117,48 @@
           .program-composition {
             font-size: 20px;
           }
-          .program-songname{
-            font-size: 24px;
-            margin-left: 20px;
+          .program-songname-box {
+            display: flex;
+            justify-content: space-between;
+
+            .program-songname {
+              font-size: 24px;
+              margin-left: 20px;
+            }
+            .program-notice-lyrics-box{
+              display: flex;
+
+              .program-notice-lyrics-btn {
+                width: 70px;
+                height: 30px;
+                border: 1px solid #8C8C8C;
+                border-radius: 5px;
+                box-sizing: border-box;
+                margin-left: 10px;
+
+                @include middle;
+                p {
+                  font-size: 14px;
+                }
+              }
+              .program-notice-lyrics-btn:hover {
+                border: 2px solid #333;
+                cursor: pointer;
+              }
+              .Contentbox {
+                position: absolute;
+                width: 500px;
+                top: 60px;
+                right: 0;
+                background-color: #fff;
+                padding: 10px;
+                z-index: 9;
+                border: 1px solid #8C8C8C;
+                border-radius: 5px;
+                box-sizing: border-box;
+                line-height: 28px;
+              }
+            }
           }
           .program-subsongname {
             font-size: 20px;

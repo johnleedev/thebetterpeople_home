@@ -16,11 +16,10 @@ export default function RegisterPlayer (props:any) {
 
   let navigate = useNavigate();
   const location = useLocation(); 
-  // const sort = location.state.sort;
-  // const userPart = location.state.part;
-  const sort = 'Piano';
-  const userPart = 'Piano';
-    
+  const sort = location.state.sort;
+  const userPart = location.state.part;
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   interface playerProps {
     part: string;
     name: string;
@@ -44,10 +43,16 @@ export default function RegisterPlayer (props:any) {
   );
 
   // 연주자 박스 추가
-  const addProgramInput = () => {
+  const addPlayerInput = () => {
     setPlayers([...players, { part: '', name: '', imageFiles: [], careerInputs: ['', '', '', ''], careerText: "", isStyleWrite: false }]);
   };
-  
+
+  // 연주자 박스 추가
+  const deletePlayerInput = () => {
+    const inputs = [...players];
+    inputs.splice(0, inputs.length - 1);
+    setPlayers(inputs);
+  };
 
   // careerTextArea 높이 조절
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -99,9 +104,9 @@ export default function RegisterPlayer (props:any) {
   };
 
   // 이력 입력란 삭제
-  const removeCareerInput = (index: number) => {
+  const removeCareerInput = (index: number, subIdx: number) => {
     const inputs = [...players];
-    inputs[index].careerInputs.splice(index, 1);
+    inputs[index].careerInputs.splice(subIdx, 1);
     setPlayers(inputs);
   };
 
@@ -133,7 +138,7 @@ export default function RegisterPlayer (props:any) {
   // ---------------------------------------------------------------
   // 출연진 정보 등록
   const registerPost = async () => {
-    
+    setIsLoading(true);
     const formDataArray = players.map((player) => {
       const formData = new FormData();
       formData.append("img", player.imageFiles[0]);
@@ -142,8 +147,7 @@ export default function RegisterPlayer (props:any) {
         getParams: {
           userAccount: 'johnleedev@naver.com',
           userName: '이요한',
-          // pamphletID: location.state.pamphletID,
-          pamphletID: 12,
+          pamphletID: location.state.pamphletID,
           part: player.part,
           name: player.name,
           imageName: player.imageFiles[0]?.name,
@@ -176,7 +180,12 @@ export default function RegisterPlayer (props:any) {
     }
   };
 
-  return (
+  return isLoading
+    ? (
+    <div style={{flex:1, width:'100%', height:'80vh'}}>
+      <Loading /> 
+    </div>
+    ) : (
     <div className="apply">
 
       <div className="topimage">
@@ -186,7 +195,8 @@ export default function RegisterPlayer (props:any) {
       <div className="inner">
 
         <Title name={'등록하기'}/>
-        <SubTitle name='출연진 프로필'/>
+        <SubTitle name='STEP 3.'/>
+
 
         {players.map((item:any, index:any) => {
             
@@ -274,7 +284,7 @@ export default function RegisterPlayer (props:any) {
                           ><p>+</p></div>
                         ) : (
                           <div className='plus-minus-button'
-                            onClick={() =>{removeCareerInput(index)}}
+                            onClick={() =>{removeCareerInput(index, subIndex)}}
                           ><p>-</p></div>
                         )}
                       </div>
@@ -302,12 +312,18 @@ export default function RegisterPlayer (props:any) {
           )
         })
         }
+
         <div style={{ display:'flex'}} className='guest-plus-box'>
-            * 협연 연주자 추가하기
+            * 협연 연주자 추가/삭제
             <div className='guest-plus-button'
-              onClick={addProgramInput}
+              onClick={addPlayerInput}
               >
                 <p>+</p>
+            </div>
+            <div className='guest-plus-button'
+              onClick={deletePlayerInput}
+              >
+                <p>-</p>
             </div>
         </div>
         <div className="buttonbox">

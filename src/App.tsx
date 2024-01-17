@@ -10,8 +10,8 @@ import UseNotice from './screens/notice/UseNotice';
 import Apply from './screens/apply/Apply';
 import RegisterDefault from './screens/apply/RegisterDefault';
 import RegisterPlayer from './screens/apply/RegisterPlayer';
-import Solo from './screens/pamphlet/Solo';
-import SoloDetail from './screens/pamphlet/SoloDetail';
+import Pamphlets from './screens/pamphlet/Pamphlets';
+import Detail from './screens/pamphlet/Detail';
 import RegisterResult from './screens/apply/RegisterResult';
 import RegisterProgram from './screens/apply/RegisterProgram';
 
@@ -32,8 +32,8 @@ function App() {
         <Route path="/registerprogram" element={<RegisterProgram/>}/>
         <Route path="/registerplayer" element={<RegisterPlayer/>}/>
         <Route path="/registerresult" element={<RegisterResult/>}/>
-        <Route path="/solo" element={<Solo/>}/>
-        <Route path="/solodetail" element={<SoloDetail/>}/>
+        <Route path="/pamphlets" element={<Pamphlets/>}/>
+        <Route path="/detail" element={<Detail/>}/>
       </Routes>
     </div>
   );

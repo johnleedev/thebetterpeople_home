@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import company from "../../images/notice/company.jpg"
-import './SoloDetail.scss'
+import './Detail.scss'
 import Title from '../../components/Title';
 import Footer from '../../components/Footer';
 import { useLocation } from 'react-router-dom';
@@ -8,7 +8,7 @@ import axios from 'axios'
 import MainURL from "../../MainURL";
 import Loading from '../../components/Loading';
 
-interface postProps {
+interface PostProps {
   id : number,
   location: string,
   title : string,
@@ -25,18 +25,26 @@ interface postProps {
   ticketReserve: string,
 }
 
-interface programProps {
+interface ProgramProps {
   number : number,
   composition: string[],
-  songName: string[]
+  songName: string[],
 }
 
-interface subProgramProps {
+interface SubProgramProps {
   programNumber : number,
   songName : string[]
 }
+interface NoticeProps {
+  programNumber : number,
+  notice : string
+}
+interface LyricsProps {
+  programNumber : number,
+  lyrics : string
+}
 
-interface profileProps {
+interface ProfileProps {
   pamphletID : number,
   playerName : string,
   part : string,
@@ -45,18 +53,14 @@ interface profileProps {
   isStyleWrite: string
 }
 
-export default function SoloDetail (props:any) {
+export default function Detail (props:any) {
 
   const location = useLocation(); 
 
-  let [postData, setPostData] = useState<postProps>();
-  let [programData, setProgramData] = useState<programProps[]>([]);
-  let [subProgramData, setSubProgramData] = useState<subProgramProps[]>([]);
-  let [profileData, setProfileData] = useState<profileProps[]>([]);
   const fetchPosts = async () => {
     const post = await axios.get(`${MainURL}/pamphlets/posts/${location.state.id}`)
     if (post.data) {
-      let copy : postProps = post.data[0];
+      let copy : PostProps = post.data[0];
       setPostData(copy);
     }
     const program = await axios.get(`${MainURL}/pamphlets/program/${location.state.id}`)
@@ -66,24 +70,44 @@ export default function SoloDetail (props:any) {
       setProgramData(programData);
       const subProgramData = JSON.parse(copy.subProgram);
       setSubProgramData(subProgramData);
+      const noticeData = JSON.parse(copy.notice) || [];
+      setNoticeData(noticeData);
+      setIsNoticeView(Array(noticeData.length).fill(false));
+      const lyricsData = JSON.parse(copy.lyrics) || [];
+      setLyricsData(lyricsData);
+      
     }
     const profile = await axios.get(`${MainURL}/pamphlets/profiles/${location.state.id}`)
     if (profile.data) {
-      let copy : profileProps[] = profile.data;
+      let copy : ProfileProps[] = profile.data;
       copy.reverse();
       setProfileData(copy);
     }
   };
-  console.log(typeof postData);
-  console.log(typeof programData);
-  console.log(typeof profileData);
-
+   
   useEffect(() => {
     fetchPosts();
   }, []);
 
-  const posterImageURL = `${MainURL}/images/pamphlet_default/${postData?.imageName}`
+  let [postData, setPostData] = useState<PostProps>();
+  let [programData, setProgramData] = useState<ProgramProps[]>([]);
+  let [subProgramData, setSubProgramData] = useState<SubProgramProps[]>([]);
+  let [noticeData, setNoticeData] = useState<NoticeProps[]>([]);
+  let [lyricsData, setLyricsData] = useState<LyricsProps[]>([]);
+  let [profileData, setProfileData] = useState<ProfileProps[]>([]);
   
+
+  const posterImageURL = `${MainURL}/images/pamphlet_default/${postData?.imageName}`
+  const [isNoticeView, setIsNoticeView] = useState<boolean[]>([]);
+
+  console.log(isNoticeView);
+
+  const noticeSelection = (index : any) => {
+    const selection = [...isNoticeView];
+    selection[index] = !selection[index];
+    setIsNoticeView(selection);
+    console.log(selection);
+  };
   
   return  postData === undefined || programData.length === 0 || profileData.length === 0
     ? (
@@ -129,7 +153,10 @@ export default function SoloDetail (props:any) {
           <ul className="program-cover">
             {
               programData.map((item:any, index:any)=>{
-                const copy = subProgramData.find((e)=> e.programNumber === item.number);
+                const subProgramCopy = subProgramData.find((e)=> e.programNumber === item.number);
+                const noticeCopy = noticeData.length > 0 ? noticeData.find((e)=> e.programNumber === item.number) : undefined;
+                const lyricsCopy = lyricsData.length > 0 ? lyricsData.find((e)=> e.programNumber === item.number) : undefined;
+
                 return (
                   <li className="program-list" key={item.number}>
                     {
@@ -141,7 +168,7 @@ export default function SoloDetail (props:any) {
                             ?
                             null
                             :
-                            <p className="program-composition">{compositionItem}</p>
+                            <p className="program-composition" key={compositionIndex}>{compositionItem}</p>
                            }
                           </>
                         )
@@ -158,14 +185,37 @@ export default function SoloDetail (props:any) {
                               - InterMission -
                               </p>
                               :
-                              <p className="program-songname" key={subIndex}>{subItem}</p>
+                              <div className="program-songname-box">
+                                <p className="program-songname" key={subIndex}>{subItem}</p>
+                                <div className="program-notice-lyrics-box">
+                                  {
+                                    noticeCopy && 
+                                    <>
+                                      <div className="program-notice-lyrics-btn"
+                                        onClick={()=>{noticeSelection(index)}}
+                                      >
+                                        <p>곡설명</p>
+                                      </div>
+                                      {
+                                        isNoticeView[index] && <div className="Contentbox">{noticeCopy.notice}</div>
+                                      }
+                                    </>
+                                  }
+                                  {
+                                    lyricsCopy &&
+                                    <div className="program-notice-lyrics-btn">
+                                      <p>가사보기</p>
+                                    </div>
+                                  }
+                                </div>
+                              </div>
                             }
                             {
-                              copy
+                              subProgramCopy
                               ?
                               <>
                                 {
-                                  copy.songName.map((song:any, songIdx:any)=>{
+                                  subProgramCopy.songName.map((song:any, songIdx:any)=>{
                                     return (
                                       <p className="program-subsongname" key={songIdx}>{songIdx+1}. {song}</p>
                                     )

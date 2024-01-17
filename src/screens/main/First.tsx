@@ -41,7 +41,6 @@ export default function First(props : any) {
     fetchPosts();
   }, []);
 
-	console.log(postList);
 
   return (
     <div className="first">
@@ -86,9 +85,9 @@ export default function First(props : any) {
 							postList.map((item, index)=>{
 								const posterImageURL = `${MainURL}/images/pamphlet_default/${item?.imageName}`
  								return (
-									<SwiperSlide className='slide'>
+									<SwiperSlide className='slide' key={index}>
 										<div className="content" onClick={()=>{
-											 navigate('/solodetail', {state: { ...item}})
+											 navigate('/detail', {state: { ...item}})
 										}}>
 											<img src={posterImageURL} />
 											<div>{item.title}</div>

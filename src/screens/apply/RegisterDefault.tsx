@@ -27,7 +27,16 @@ import Loading from '../../components/Loading';
 export default function RegisterDefault(props:any) {
 
   let navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const dateCopy = new Date();
+  const yearCopy = dateCopy.getFullYear();
+  const monthOrigin = dateCopy.getMonth() + 1;
+  const monthCopy = monthOrigin < 10 ? `0${monthOrigin}` : monthOrigin;
+  const dayOrigin = dateCopy.getDate();
+  const dayCopy = dayOrigin < 10 ? `0${dayOrigin}` : dayOrigin;
+  const formatToday = `${yearCopy}${monthCopy}${dayCopy}`;
+  
   // -------------------------------------------------------
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [title, setTitle] = useState('');
@@ -37,7 +46,7 @@ export default function RegisterDefault(props:any) {
   const [nameEn, setNameEn] = useState('');
   const [location, setLocation] = useState('');
   const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
+  const [time, setTime] = useState('PM 7:30');
   const [place, setPlace] = useState('');
   const [address, setAddress] = useState('');
   const [superViser, setSuperViser] = useState('');
@@ -78,6 +87,24 @@ export default function RegisterDefault(props:any) {
     { value: 'BARITONE', label: 'Baritone' },
     { value: 'BASS', label: 'Bass' },
   ];
+
+  // const partOptionsKorean = [
+  //   { value: 'koreanVocal', label: '판소리' },
+  //   { value: 'gayagem', label: '가야금' },
+  //   { value: 'gumungo', label: '거문고' },
+  //   { value: 'haegem', label: '해금' },
+  //   { value: 'daegem', label: '대금' },
+  //   { value: 'piri', label: '피리' },
+  //   { value: 'ajaeng', label: '아쟁' },
+  //   { value: 'koreanComposition', label: '작곡' }
+  // ];
+
+  // const partOptionsPractical = [
+  //   { value: '', label: '보컬' },
+  //   { value: '', label: '건반' },
+  //   { value: '', label: '기타' },
+  //   { value: '', label: '드럼' },
+  // ];
 
 
   const [selectedPartOption, setSelectedPartOption] = useState({ value: '선택', label: '선택' });
@@ -144,7 +171,7 @@ export default function RegisterDefault(props:any) {
 
   ];
 
-  const [selectedTimeOption, setSelectedTimeOption] = useState(timeOptions[0]);
+  const [selectedTimeOption, setSelectedTimeOption] = useState(timeOptions[20]);
   const handleSelectTimeChange = ( event : any) => {
    setSelectedTimeOption(event);
    setTime(event.label);
@@ -310,10 +337,12 @@ export default function RegisterDefault(props:any) {
 
   // 프로그램 팜플렛 정보 등록 함수 ----------------------------------------------
   const registerPost = async () => {
+    setIsLoading(true);
     const formData = new FormData();
     formData.append("img", imageFiles[0]);
     const getParams = {
       userAccount : 'johnleedev@naver.com', userName: '이요한',
+      registerDate : formatToday,
       sort: sort, title: title, location: location, date: date, time : time, 
       place : place, address : address, 
       superViser :superViser, supporter : supporter,
@@ -341,7 +370,12 @@ export default function RegisterDefault(props:any) {
       })
   };
 
-  return (
+  return isLoading
+    ? (
+    <div style={{flex:1, width:'100%', height:'80vh'}}>
+      <Loading /> 
+    </div>
+    ) : (
     <div className="apply">
 
       <div className="topimage">
@@ -350,10 +384,8 @@ export default function RegisterDefault(props:any) {
 
       <div className="inner">
 
-        <div className="title">
-          <Title name={'등록하기'}/>
-        </div>
-
+        
+        <Title name={'등록하기'}/>
         <SubTitle name='STEP 1.'/>
 
         {/* 기본정보 */}
@@ -498,24 +530,28 @@ export default function RegisterDefault(props:any) {
             <div className="inputbox">
               <div className='name'>
                 <p>주관/주최</p>
+                <p style={{fontSize:12}}>(선택)</p>
               </div>
               <input type="text" onChange={(e)=>{setSuperViser(e.target.value)}} value={superViser} />
             </div>
             <div className="inputbox">
               <div className='name'>
                 <p>후원</p>
+                <p style={{fontSize:12}}>(선택)</p>
               </div>
               <input type="text" onChange={(e)=>{setSupporter(e.target.value)}} value={supporter} />
             </div>
             <div className="inputbox">
               <div className='name'>
                 <p>티켓가격</p>
+                <p style={{fontSize:12}}>(선택)</p>
               </div>
               <input type="text" onChange={(e)=>{setTicket(e.target.value)}} value={ticket} placeholder='ex) 전석 1만원' />
             </div>
             <div className="inputbox">
               <div className='name'>
                 <p>티켓예매</p>
+                <p style={{fontSize:12}}>(선택)</p>
               </div>
               <input type="text" onChange={(e)=>{setTicketReserve(e.target.value)}} value={ticketReserve} placeholder='티켓 예매 링크를 입력해주세요'/>
             </div>
@@ -658,12 +694,12 @@ export default function RegisterDefault(props:any) {
                     </div>
                     <div className={`style${selectStyle} place`} style={{bottom:selectBottom2}}>{place}</div>
                     <div className={`style${selectStyle} superViser-supporter`} style={{bottom:selectBottom3}}>
-                      <div className="sublist superViser">주관:<p>{superViser}</p></div>
-                      <div className="sublist supporter">후원:<p>{supporter}</p></div>
+                      { superViser !== '' && <div className="sublist superViser">주관:<p>{superViser}</p></div>}
+                      { supporter !== '' && <div className="sublist supporter">후원:<p>{supporter}</p></div>}
                     </div>
                     <div className={`style${selectStyle} ticket-quiry`} style={{bottom:selectBottom4}}>
-                      <div className="sublist ticket">티켓:<p>{ticket}</p></div>
-                      <div className="sublist ticketReserve">예매처:<p>{ticketReserve}</p></div>
+                      { ticket !== '' && <div className="sublist ticket">티켓:<p>{ticket}</p></div>}
+                      { ticketReserve !== '' &&  <div className="sublist ticketReserve">예매처:<p>{ticketReserve}</p></div>}
                       <div className="sublist quiry">문의:<p>{quiry}</p></div>
                     </div>
                     <img src={logo} className={`style${selectStyle} logo`}/>
