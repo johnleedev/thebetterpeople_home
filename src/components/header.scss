@@ -7,12 +7,13 @@ $second-color: #fff;
   top:0;
   background-color: #fff;
   z-index: 9;
+  border-bottom: 2px solid #EAEAEA;
 
   .mainmenu {
     
     
   > .inner {
-    height: 80px;
+    height: 100px;
     display: flex;
     justify-content: space-between;
     padding: 10px;
@@ -28,7 +29,6 @@ $second-color: #fff;
         img {
           display: block;
           width: 250px;
-          height: 70px;
         }
         img:hover {
           cursor: pointer;
@@ -42,89 +42,88 @@ $second-color: #fff;
         justify-content: flex-end;
   
         .menu {
-          width: 50px;
+          width: 150px;
           height: 50px;
           text-align: center;
           margin: 0 10px;
-  
-          .icon {
-            
-          }
-  
-          .text {
-            font-size: 14px;
-          }
+          font-size: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
         .menu:hover {
           cursor: pointer;
           opacity: 0.7;
         }
       }
-    
-    }
 
-    
+      .box.box3 {
+        display: none;
+      }
+    }  
   }
-  .mainmenu:hover {
-    background-color: #EAEAEA; 
-  }
-
-
-  .mainbox {
-    position: fixed;
-    top: 0px;
-    margin-top: 100px;
-    padding-top: 50px;
-    width: 100vw;
-    height: 100vh;
-    background-color: #fff;
+  .dropdown-menu {
     display: none;
-
-    > .inner {
+    width: 100%;
+    border-bottom: 1px solid #EAEAEA;
+    
+    .menu {
+      width: 100%;
+      height: 50px;
+      text-align: center;
+      margin: 0 10px;
+      font-size: 20px;
       display: flex;
-      justify-content: space-between;
-
-      ul.container {
-        width: 230px;
-
-        li.item {
-          text-align: center;
-          padding: 10px;
-
-          h4.item__name {
-            font-size: 24px;
-            padding: 10px;
-          }
-          h4.item__name:hover {
-            cursor: pointer;
-            opacity: 0.8;
-          }
-          ul.item__menubox {
-
-            li.item__menu {
-              font-size: 16px;
-              margin-bottom: 10px;
-            }
-            li.item__menu:hover {
-              cursor: pointer;
-              opacity: 0.8;
-            }
-          }
-          
-        }
-      }
-
-      .divider {
-        margin-top: 35px;
-        width: 2px;
-        height: 100px;
-        background-color: #EAEAEA;
-      }
-
-
+      align-items: center;
+      justify-content: center;
     }
   }
-  
+  .dropdown-menu-none{
+    display: none;
+  }
+
 }
 
+@media screen and (max-width : 600px) { 
+  .header {
+    max-width: 600px;
+    width: 100%;
+    
+
+    .mainmenu {
+
+      > .inner {
+        justify-content: flex-start;
+        
+        .box.box1 {
+  
+          img {
+            width: 200px;
+          }
+        }
+        .box.box2 {
+          display: none;
+        }
+
+        .box.box3 {
+          display: flex;
+          width: calc( 100vw - 270px);
+          justify-content: end;
+          align-items: center;
+
+          .menu-icon {
+            font-size: 25px;
+          }
+          .menu-icon:hover {
+            opacity: 0.7;
+          }
+        }
+
+      }
+      .dropdown-menu {
+        display: block;
+      }
+    }
+  }
+}
 

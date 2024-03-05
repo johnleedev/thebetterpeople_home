@@ -7,7 +7,7 @@ export default function Footer (props:any) {
     <footer className='footer'>
       <div className="inner">
         
-        <ul>
+        <ul className='notice'>
           <a href='#'>
             <li className='link'>저작권 정책</li>
           </a>
@@ -33,12 +33,11 @@ export default function Footer (props:any) {
           <li className='text'>더좋은사람들</li>
           <li className='text'>사업자등록번호: 736-29-01512</li>
           <li className='text'>통신판매업신고번호: 2023-대구달성-1006호</li>
-          <li className='text'>대표자: 이요한</li>
         </ul>
 
         <ul>
           <li className='text'>E-mail: thebetterpeople@naver.com</li>
-          <li className='text'>전화문의 : 010-6562-5948</li>
+          <li className='text'>전화문의 : 010-9584-5948</li>
           <li className='text'>카카오톡문의 : ID - thebetterpeople</li>
         </ul>
 
