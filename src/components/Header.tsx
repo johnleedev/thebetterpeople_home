@@ -36,14 +36,14 @@ export default function Header () {
                 window.scroll({top: contact_Y - 150, behavior:'smooth'}) 
               }}
             >
-             Contact US
+             CONTACT
             </div>
             <div className="menu"
               onClick={()=>{
                 window.scroll({top: projects_Y - 150, behavior:'smooth'}) 
               }}
             >
-             Projects
+             PROJECTS
             </div>
           </div>
 
@@ -65,7 +65,7 @@ export default function Header () {
               setMenu(!menu);
             }}
           >
-            Projects
+            CONTACT
           </div>
           <div className="menu"
             onClick={()=>{
@@ -73,7 +73,7 @@ export default function Header () {
               setMenu(!menu);
             }}
           >
-            Contact US
+            PROJECTS
           </div>
         </div>
 

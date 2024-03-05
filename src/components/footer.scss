@@ -41,6 +41,10 @@
 
     .copyright {
       margin-top: 20px;
+
+      li {
+        margin-right: 10px;
+      }
     }
 
   }
@@ -52,7 +56,7 @@
   
   .footer {
     width: 100%; 
-    height: 300px;
+    height: 350px;
 
     .inner {
       width: 90%;

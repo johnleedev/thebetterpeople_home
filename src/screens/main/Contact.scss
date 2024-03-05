@@ -99,7 +99,12 @@
             display: none;
           }
           .textrow{
+            height: 100px;
             flex-direction: column;
+
+            p {
+              font-size: 25px;
+            }
           }
         }
       }

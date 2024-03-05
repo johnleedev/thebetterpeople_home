@@ -42,7 +42,9 @@ export default function Footer (props:any) {
         </ul>
 
         <ul className='copyright'>
-          <li>COPYRIGHT © 2023. TheBetterPeople. All rights reserved. </li>
+          <li>COPYRIGHT </li>
+          <li>© 2023. TheBetterPeople.</li>
+          <li>All rights reserved. </li>
         </ul>
 
 
