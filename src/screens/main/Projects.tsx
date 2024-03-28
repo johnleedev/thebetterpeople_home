@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { FaCheck } from "react-icons/fa";
 import apple from '../../images/projects/apple.png'
 import google from '../../images/projects/google.png'
+import churchbooklet from '../../images/projects/churchbooklet.png'
+import churchbooklet_icon from '../../images/projects/churchbooklet-icon.png'
 import ashow from '../../images/projects/ashow.png'
 import ashow_icon from '../../images/projects/ashow-icon.png'
 import classic from '../../images/projects/classic.png'
@@ -38,75 +40,31 @@ export default function Projects(props : any) {
 				</div>
 
         <div className="project-box">
-          <img src={ashow} className='project-img'/>
-          
-          <div className="textbox">
-            <h1>아쇼</h1>
-        
-            <div className="textrow">
-              <div className="row-name">
-                <FaCheck />
-                <p>주요 서비스</p>
-              </div>
-              <div className="row-notice">
-                <p>분양 아파트 관련 정보 플랫폼</p>
-              </div>
-            </div>
-
-            <div className="textrow">
-              <div className="row-name">
-                <FaCheck />
-                <p>핵심기능</p>
-              </div>
-              <div className="row-notice">
-                <p>분양 아파트 최신 정보 소개, 가격비교, 분양 가이드, 커뮤니티</p>
-              </div>
-            </div>
-
-            <div className="textrow">
-              <div className="row-name">
-                <FaCheck />
-                <p>아이콘</p>
-              </div>
-              <div className="row-notice">
-                <img src={ashow_icon} className='project-icon'/>
-              </div>
-            </div>
-            
-            <div className="textrow">
-              <div className="row-name">
-                <FaCheck />
-                <p>앱 다운받기</p>
-              </div>
-              <div className="row-notice">
-                <div className="button-box">
-                  <a href='https://apps.apple.com/kr/app/%EC%95%84%EC%87%BC/id6455837375' target='_blank'>
-                    <div className="button">
-                      <img src={apple} className="btn-img" alt="Logo" />
-                      <p>App Store</p>
-                    </div>
-                  </a>
-                </div>
-
-                <div className="button-box">
-                  <a href='https://play.google.com/store/apps/details?id=com.ashow.app' target='_blank'>
-                    <div className="button">
-                        <img src={google} className="btn-img" alt="Logo" />
-                        <p>Google Play</p>
-                    </div>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-				</div>
-
-        <div className="project-box">
           <img src={classic} className='project-img'/>
           
           <div className="textbox">
             <h1>성악과학생들</h1>
         
+            <div className="textrow">
+              <div className="row-name">
+                <FaCheck />
+                <p>출시여부</p>
+              </div>
+              <div className="row-notice">
+                <p>정식출시됨 (출시 : 2023.11)</p>
+              </div>
+            </div>
+
+            <div className="textrow">
+              <div className="row-name">
+                <FaCheck />
+                <p>프로젝트참여도</p>
+              </div>
+              <div className="row-notice">
+                <p>더좋은사람들 100% (기획&디자인&개발)</p>
+              </div>
+            </div>
+
             <div className="textrow">
               <div className="row-name">
                 <FaCheck />
@@ -170,6 +128,26 @@ export default function Projects(props : any) {
           
           <div className="textbox">
             <h1>간호대학생들</h1>
+
+            <div className="textrow">
+              <div className="row-name">
+                <FaCheck />
+                <p>출시여부</p>
+              </div>
+              <div className="row-notice">
+                <p>정식출시됨 (출시 : 2024.02)</p>
+              </div>
+            </div>
+
+            <div className="textrow">
+              <div className="row-name">
+                <FaCheck />
+                <p>프로젝트참여도</p>
+              </div>
+              <div className="row-notice">
+                <p>더좋은사람들 100% (기획&디자인&개발)</p>
+              </div>
+            </div>
         
             <div className="textrow">
               <div className="row-name">
@@ -218,6 +196,177 @@ export default function Projects(props : any) {
 
                 <div className="button-box">
                   <a href='https://play.google.com/store/apps/details?id=com.studentsnursing.app' target='_blank'>
+                    <div className="button">
+                        <img src={google} className="btn-img" alt="Logo" />
+                        <p>Google Play</p>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+				</div>
+
+        
+
+        <div className="project-box">
+          <img src={churchbooklet} className='project-img'/>
+          
+          <div className="textbox">
+            <h1>교회수첩</h1>
+        
+            <div className="textrow">
+              <div className="row-name">
+                <FaCheck />
+                <p>출시여부</p>
+              </div>
+              <div className="row-notice">
+                <p>정식출시됨 (출시 : 2024.03)</p>
+              </div>
+            </div>
+
+            <div className="textrow">
+              <div className="row-name">
+                <FaCheck />
+                <p>프로젝트참여도</p>
+              </div>
+              <div className="row-notice">
+                <p>더좋은사람들 100% (기획&디자인&개발)</p>
+              </div>
+            </div>
+
+            <div className="textrow">
+              <div className="row-name">
+                <FaCheck />
+                <p>주요 서비스</p>
+              </div>
+              <div className="row-notice">
+                <p>온라인 교회수첩, 교회요람</p>
+              </div>
+            </div>
+
+            <div className="textrow">
+              <div className="row-name">
+                <FaCheck />
+                <p>핵심기능</p>
+              </div>
+              <div className="row-notice">
+                <p>교회 소개, 교인 목록(전화번호부, 사업체), 커뮤니티</p>
+              </div>
+            </div>
+
+            <div className="textrow">
+              <div className="row-name">
+                <FaCheck />
+                <p>아이콘</p>
+              </div>
+              <div className="row-notice">
+                <img src={churchbooklet_icon} className='project-icon'/>
+              </div>
+            </div>
+            
+            <div className="textrow">
+              <div className="row-name">
+                <FaCheck />
+                <p>앱 다운받기</p>
+              </div>
+              <div className="row-notice">
+                <div className="button-box">
+                  <a href='https://apps.apple.com/kr/app/%EA%B5%90%ED%9A%8C%EC%88%98%EC%B2%A9/id6479247886' target='_blank'>
+                    <div className="button">
+                      <img src={apple} className="btn-img" alt="Logo" />
+                      <p>App Store</p>
+                    </div>
+                  </a>
+                </div>
+
+                <div className="button-box">
+                  <a href='https://play.google.com/store/apps/details?id=com.churchbooklet.app' target='_blank'>
+                    <div className="button">
+                        <img src={google} className="btn-img" alt="Logo" />
+                        <p>Google Play</p>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+				</div>
+
+        
+        <div className="project-box">
+          <img src={ashow} className='project-img'/>
+          
+          <div className="textbox">
+            <h1>아쇼</h1>
+        
+            <div className="textrow">
+              <div className="row-name">
+                <FaCheck />
+                <p>출시여부</p>
+              </div>
+              <div className="row-notice">
+                <p>베타버전 출시, 정식출시 전</p>
+              </div>
+            </div>
+
+            <div className="textrow">
+              <div className="row-name">
+                <FaCheck />
+                <p>프로젝트참여도</p>
+              </div>
+              <div className="row-notice">
+                <p>더좋은사람들 : 80% (개발) / (주)거림 : 20% (기획&디자인)</p>
+              </div>
+            </div>
+
+            <div className="textrow">
+              <div className="row-name">
+                <FaCheck />
+                <p>주요 서비스</p>
+              </div>
+              <div className="row-notice">
+                <p>분양 아파트 관련 정보 플랫폼</p>
+              </div>
+            </div>
+
+            <div className="textrow">
+              <div className="row-name">
+                <FaCheck />
+                <p>핵심기능</p>
+              </div>
+              <div className="row-notice">
+                <p>분양 아파트 최신 정보 소개, 가격비교, 분양 가이드, 커뮤니티</p>
+              </div>
+            </div>
+
+            <div className="textrow">
+              <div className="row-name">
+                <FaCheck />
+                <p>아이콘</p>
+              </div>
+              <div className="row-notice">
+                <img src={ashow_icon} className='project-icon'/>
+              </div>
+            </div>
+            
+            <div className="textrow">
+              <div className="row-name">
+                <FaCheck />
+                <p>앱 다운받기</p>
+              </div>
+              <div className="row-notice">
+                <div className="button-box">
+                  <a href='https://apps.apple.com/kr/app/%EC%95%84%EC%87%BC/id6455837375' target='_blank'>
+                    <div className="button">
+                      <img src={apple} className="btn-img" alt="Logo" />
+                      <p>App Store</p>
+                    </div>
+                  </a>
+                </div>
+
+                <div className="button-box">
+                  <a href='https://play.google.com/store/apps/details?id=com.ashow.app' target='_blank'>
                     <div className="button">
                         <img src={google} className="btn-img" alt="Logo" />
                         <p>Google Play</p>
