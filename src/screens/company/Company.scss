@@ -1,0 +1,234 @@
+@mixin middle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+};
+
+.company {
+  padding-top: 50px;
+
+  > .inner {
+    display: flex;
+
+    .subpage__menu {
+      width: 30%;
+      margin-right: 32px;
+
+      img {
+        width: 100%;
+      }
+      
+    }
+
+    .subpage__main {
+      width: 65%;
+      min-height: 100vh;
+
+      .subpage__main__title {
+        font-size: 30px;
+        font-weight: 600;
+        color: #33383f;
+      }
+      
+      .subpage__main__content {
+        padding-top: 50px;
+        font-size: 20px;
+        color: #333;
+        @include middle();
+        flex-direction: column;
+        
+        .notice-cover {
+          width: 100%;
+
+          .cover {
+            margin-bottom: 30px;
+
+            .notice {
+
+              &.row {
+                display: flex;
+                justify-content: space-between;
+              }
+
+              &.right {
+                display: flex;
+                flex-direction: column;
+                align-items: end;
+                
+              }
+              
+              .notice-text-title {
+                display: flex;
+                align-items: center;
+
+                h2 {
+                  font-size: 20px;
+                  font-weight: 600;
+                  margin-left: 10px;
+                }
+              }
+              h1 {
+                font-size: 80px;
+                font-weight: bold;
+                margin-bottom: 30px;
+              }
+              
+              .notice-text-row {
+                width: 30%;
+                min-height: 150px;
+                border: 1px solid #EAEAEA;
+                padding: 10px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+
+                p {
+                  font-size: 18px;
+                  margin-bottom: 10px;
+                }
+                .notice-text-right {
+                  text-align: right;
+                }
+              }
+              p {
+                font-size: 18px;
+                margin-bottom: 10px;
+              }
+              .notice-row {
+                display: flex;
+                align-items: center;
+                border: 1px solid #EAEAEA;
+                padding: 10px;
+                margin-bottom: 10px;
+                
+                img {
+                  width: 50px;
+                  height: 50px;
+                  resize: cover;
+                }
+                .notice-row-textbox {
+                  height: 60px;
+                  text-align: end;
+                  margin-left: 10px;
+                  p {
+                    margin: 0;
+                  }
+                }
+              }
+              .notice-row:hover {
+                cursor: pointer;
+                border: 1px solid #d7d7d7;
+              }
+              
+            }
+          }
+        }
+        
+      }
+      
+      
+    }
+    
+    .maptitle {
+      width: 100%;
+      text-align: center;
+      font-size: 30px;
+      font-weight: bold;
+    }
+    .maparea {
+      width: 100%;
+      margin-top: 20px;
+      margin-bottom: 50px;
+      position: relative;
+    }
+    
+  }
+  
+
+  
+}
+
+@media (max-width: 1000px) { 
+  .company {
+  
+    > .inner {
+
+      .subpage__menu { 
+        display: none;
+      }
+      .subpage__main { 
+        width: 100%;
+
+        .subpage__main__title {
+          font-size: 20px;
+        }
+
+        .subpage__main__content {
+          font-size: 16px;
+
+          .main__content {
+            
+          }
+
+        }
+
+      }
+    }
+  }
+}
+
+@media (max-width: 600px) { 
+  .company {
+  
+    > .inner {
+
+      
+      .subpage__main { 
+        
+        .subpage__main__content {
+         
+          
+          .notice-cover {
+        
+  
+            .cover {
+              margin-bottom: 20px;
+  
+              .notice {
+  
+                &.row {
+                  @include middle();
+                  flex-direction: column;
+                }
+                
+                h2 {
+                  
+                }
+                .notice-text-row {
+                  width: 90%;
+                  min-height: 100px;
+                  margin-bottom: 20px;
+
+                  p {
+                  
+                  }
+                  .notice-text-right {
+                  
+                  }
+                }
+                p {
+                 
+                }
+                
+              }
+            }
+          }
+        }
+        
+
+      }
+    }
+  }
+}
+
+

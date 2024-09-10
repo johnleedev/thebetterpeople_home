@@ -1,87 +1,90 @@
-import React, {  useState, useEffect, useRef } from "react";
-import './header.scss'
-import logo from '../images/logo.jpeg'
+import React, { useState, useEffect } from 'react';
+import './Header.scss';
+import { FaPlus } from "react-icons/fa6";
 import { useNavigate } from 'react-router-dom';
-import { FaBars } from "react-icons/fa";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { contact_Y_Location, projects_Y_Location } from "../RecoilStore";
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { recoilLoginState, recoilUserData } from '../RecoilStore';
 
-
-export default function Header () {
+const Header: React.FC = () => {
   
   let navigate = useNavigate();
+   
+  const menus = [
+    { title: "회사소개", url:"/company"},
+    { title: "포트폴리오", url:"/portfolio"},
+    { title: "견적문의", url:"/contact"},
+  ];
 
-  const [menu, setMenu] = useState<boolean>(false);
- 
-  const contact_Y = useRecoilValue(contact_Y_Location);
-  const projects_Y = useRecoilValue(projects_Y_Location);
+  const [menuOpen, setMenuOpen] = useState<boolean>(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<{ [key: number]: boolean }>({});
 
-  console.log(contact_Y);
-  console.log(projects_Y);
+  const toggleMenu = () => {
+      setMenuOpen(!menuOpen);
+  };
+
+  const toggleMobileMenu = (index: number) => {
+      setMobileMenuOpen((prevState) => ({
+          ...prevState,
+          [index]: !prevState[index],
+      }));
+  };
+
 
   return (
-    
-    <header className="header">
-
-      <div className="mainmenu">
+    <div className="header">
+      <div className="header-content">
         <div className="inner">
-        
-          <div className="box box1" onClick={()=>{navigate('/');}}>
-            <img src={logo} />
-          </div>
-          
-          <div className="box box2">
-            <div className="menu"
-              onClick={()=>{
-                window.scroll({top: contact_Y - 150, behavior:'smooth'}) 
-              }}
-            >
-             CONTACT
-            </div>
-            <div className="menu"
-              onClick={()=>{
-                window.scroll({top: projects_Y - 150, behavior:'smooth'}) 
-              }}
-            >
-             PROJECTS
-            </div>
-          </div>
-
-          <div className="box box3">
-            <div className="menu-icon"
-              onClick={()=>{
-                setMenu(!menu);
-              }}
-            >
-              <FaBars/>
-            </div>
-          </div>
-        </div>
-
-        <div className={ menu ? 'dropdown-menu' : 'dropdown-menu-none'}>
-          <div className="menu"
-            onClick={()=>{
-              window.scroll({top: contact_Y - 150, behavior:'smooth'}) 
-              setMenu(!menu);
-            }}
-          >
-            CONTACT
-          </div>
-          <div className="menu"
-            onClick={()=>{
-              window.scroll({top: projects_Y - 100, behavior:'smooth'}) 
-              setMenu(!menu);
-            }}
-          >
-            PROJECTS
+          <div className="container header-content-container">
+              <div className="header-logo" 
+                onClick={()=>{navigate('/')}}
+              >
+                <h1>더좋은사람들</h1>
+              </div>
+              <div className="header-menu">
+                {
+                  menus.map((item:any, index:any) => (
+                    <div className="menu-item" key={index}>
+                        <div className="menu-face" 
+                          onClick={()=>{
+                            navigate(item.url);
+                          }}
+                        >{item.title}</div>
+                    </div>
+                  ))
+                }
+              </div>
+              <div className={`header-hamburger_menu ${menuOpen ? 'header-hamburger_menu--open' : ''}`}>
+                  <div className="header-hamburger_icon" onClick={toggleMenu}></div>
+                  <div className="header-mobile_menu">
+                      <div className="mobile_menu-inner">
+                         
+                          <div className="mobile_menu-list">
+                              {
+                                menus.map((item:any, index:any) => (
+                                  <div className={`mobile_menu-item ${mobileMenuOpen[index] ? 'mobile_menu-item--open' : ''}`} 
+                                    key={index} onClick={() => 
+                                      toggleMobileMenu(index)
+                                    }>
+                                      <div className="mobile_menu-item_inner">
+                                          <div className={`mobile_menu-face ${mobileMenuOpen[index] ? 'mobile_menu-face--open' : ''}`}>
+                                              <div className="mobile_menu-face_text" 
+                                                onClick={()=>{
+                                                  navigate(item.url);
+                                                }}>{item.title}</div>
+                                              <div className="mobile_menu-face_icon"></div>
+                                          </div>
+                                      </div>
+                                  </div>
+                              ))}
+                          </div>
+                      </div>
+                  </div>
+              </div>
           </div>
         </div>
-
       </div>
-      
-      
-    </header>
-    
+    </div>
   );
 };
 
+export default Header;

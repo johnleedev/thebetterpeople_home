@@ -1,5 +1,5 @@
 import React from 'react';
-import icon from "../images/icon.png"
+import icon from ".../images/icon.png"
 
 interface TitleProps {
   name : string

@@ -1,10 +1,9 @@
 .App {
   font-family: 'Pretendard';
-  color: #333;
+  color: #1B1B1B;
   font-weight: 500;
   line-height: 1.4;
   font-size: 16px;
-  padding-top: 100px;
 }
 
 img {
@@ -23,27 +22,28 @@ input {
 
 .inner {
   position: relative;
-  width: 1300px;
+  max-width: 1400px;
   margin: 0 auto;
+
+  .leftMenubox {
+    width: 20%;
+    min-height: 100vh;
+  }
+  .rightContentBox {
+    width: 80%;
+    min-height: 100vh;
+  }
+}
+
+@media screen and (max-width : 1500px) { 
+  .inner {
+    width: 90vw;
+  }  
 }
 
 
 
-// .btn {
-//   width: 130px;
-//   padding: 10px;
-//   border: 2px solid #333;
-//   border-radius: 4px;
-//   color: #333;
-//   font-size: 16px;
-//   font-weight: 700;
-//   text-align: center;
-//   cursor: pointer;
-//   box-sizing: border-box;
-//   display: block;
-//   transition: .4s;
-// }
-// .btn:hover {
-//   background-color: #333;
-//   color: #fff;
-// }
+
+
+
+  
