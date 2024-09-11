@@ -62,9 +62,10 @@ const Header: React.FC = () => {
                               {
                                 menus.map((item:any, index:any) => (
                                   <div className={`mobile_menu-item ${mobileMenuOpen[index] ? 'mobile_menu-item--open' : ''}`} 
-                                    key={index} onClick={() => 
-                                      toggleMobileMenu(index)
-                                    }>
+                                    key={index} onClick={() => {
+                                      toggleMobileMenu(index);
+                                      setMenuOpen(false);
+                                    }}>
                                       <div className="mobile_menu-item_inner">
                                           <div className={`mobile_menu-face ${mobileMenuOpen[index] ? 'mobile_menu-face--open' : ''}`}>
                                               <div className="mobile_menu-face_text" 
